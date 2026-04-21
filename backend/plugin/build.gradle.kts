@@ -1,5 +1,5 @@
 /*
- * Copyright 2026 Ritense BV, the Netherlands.
+ * Copyright 2015-2024 Ritense BV, the Netherlands.
  *
  * Licensed under EUPL, Version 1.2 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,49 +14,25 @@
  * limitations under the License.
  */
 
-dockerCompose {
-    setProjectName("sample-plugin")
-    isRequiredBy(project.tasks.integrationTesting)
-
-    tasks.integrationTesting {
-        useComposeFiles.addAll("$rootDir/docker-resources/docker-compose-base-test.yml", "docker-compose-override.yml")
-    }
-}
-
-val kotlinLoggingVersion: String by project
-val mockitoKotlinVersion: String by project
-val valtimoVersion: String by project
-val operatonVersion: String by project
-
 dependencies {
-    compileOnly("com.ritense.valtimo:plugin-valtimo")
-    compileOnly("com.ritense.valtimo:process-document")
-    compileOnly("com.ritense.valtimo:contract")
-    compileOnly("org.operaton.bpm:operaton-engine:$operatonVersion")
-    compileOnly("org.springframework.boot:spring-boot-autoconfigure")
-    compileOnly("org.springframework.boot:spring-boot-starter-web")
+    implementation("com.ritense.valtimo:contract")
+    implementation("com.ritense.valtimo:core")
+    implementation("com.ritense.valtimo:case")
+    implementation("com.ritense.valtimo:plugin-valtimo")
+    implementation("com.ritense.valtimo:process-document")
+    implementation("com.ritense.valtimo:value-resolver")
+    implementation(project(":backend:token-authentication"))
 
-    compileOnly("io.github.oshai:kotlin-logging:$kotlinLoggingVersion")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.19.0")
 
-    // Testing
-    testImplementation("com.ritense.valtimo:plugin-valtimo")
-    testImplementation("com.ritense.valtimo:process-document")
-    testImplementation("com.ritense.valtimo:building-block")
-    testImplementation("com.ritense.valtimo:local-resource")
-    testImplementation("com.ritense.valtimo:test-utils-common")
 
-    testImplementation("org.springframework.boot:spring-boot-starter-web")
-    testImplementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    testImplementation("org.springframework.boot:spring-boot-starter-security")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-
-    testImplementation("org.mockito:mockito-core")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion")
-
-    testImplementation("org.postgresql:postgresql")
-
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+    tasks.jar {
+        enabled = true
+        manifest {
+            attributes("Implementation-Title" to "Open Product plugin")
+        }
+    }
 }
 
 apply(from = "gradle/publishing.gradle")

@@ -1,5 +1,5 @@
 /*
- * Copyright 2026 Ritense BV, the Netherlands.
+ * Copyright 2015-2024 Ritense BV, the Netherlands.
  *
  * Licensed under EUPL, Version 1.2 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-pluginManager.withPlugin("maven-publish") {
+pluginManager.withPlugin('maven-publish') {
     publishing {
         publications {
             maven(MavenPublication) {
@@ -23,13 +23,13 @@ pluginManager.withPlugin("maven-publish") {
                 version = pluginProperties.pluginVersion
 
                 pom {
-                    name = "Sample plugin module"
-                    description = "A module containing a sample plugin"
+                    name = 'Open Product plugin'
+                    description = 'Open Product plugin'
                     developers {
                         developer {
                             id = "team-valtimo"
                             name = "Team Valtimo"
-                            email = "support@ritense.com"
+                            email = "team-valtimo@ritense.com"
                         }
                     }
                 }
