@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+val jacksonModuleKotlinVersion: String by project
+val tokenAuthenticationVersion: String by project
+
 dependencies {
     implementation("com.ritense.valtimo:contract")
     implementation("com.ritense.valtimo:core")
@@ -21,10 +24,10 @@ dependencies {
     implementation("com.ritense.valtimo:plugin-valtimo")
     implementation("com.ritense.valtimo:process-document")
     implementation("com.ritense.valtimo:value-resolver")
-    implementation(project(":backend:token-authentication"))
+    implementation("com.ritense.valtimoplugins:token-authentication:$tokenAuthenticationVersion")
 
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.19.0")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonModuleKotlinVersion")
 
 
     tasks.jar {
