@@ -10,5 +10,5 @@ enum class FrequentieEnum {
     JAARLIJKS,
 
     @JsonProperty("maandelijks")
-    MAANDELIJKS
+    MAANDELIJKS,
 }

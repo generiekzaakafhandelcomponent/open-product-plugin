@@ -18,5 +18,5 @@ package com.ritense.openproduct.client
 
 class DataBindingConfig(
     val key: String,
-    val value: String
+    val value: String,
 )

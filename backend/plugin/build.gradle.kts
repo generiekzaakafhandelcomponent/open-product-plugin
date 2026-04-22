@@ -29,7 +29,6 @@ dependencies {
     compileOnly("org.springframework.boot:spring-boot-starter-web")
     compileOnly("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonModuleKotlinVersion")
 
-
     tasks.jar {
         enabled = true
         manifest {

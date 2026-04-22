@@ -22,5 +22,5 @@ enum class StatusEnum {
     GEWEIGERD,
 
     @JsonProperty("verlopen")
-    VERLOPEN
+    VERLOPEN,
 }

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDate
 import java.util.UUID
 
-
 data class PaginatedProductList(
     @JsonProperty("count")
     val aantal: Int,
@@ -14,7 +13,7 @@ data class PaginatedProductList(
     @JsonProperty("previous")
     val vorige: String?,
     @JsonProperty("results")
-    val resultaten: List<ProductResponse> = emptyList()
+    val resultaten: List<ProductResponse> = emptyList(),
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)

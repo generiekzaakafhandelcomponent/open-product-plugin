@@ -24,18 +24,13 @@ import org.springframework.context.annotation.Bean
 
 @AutoConfiguration
 class OpenProductPluginAutoConfiguration {
-
     @Bean
     fun openProductPluginFactory(
         pluginService: PluginService,
         openProductClient: OpenProductClient,
-        valueResolverService: ValueResolverService
-    ): OpenProductPluginFactory {
-        return OpenProductPluginFactory(pluginService, openProductClient, valueResolverService)
-    }
+        valueResolverService: ValueResolverService,
+    ): OpenProductPluginFactory = OpenProductPluginFactory(pluginService, openProductClient, valueResolverService)
 
     @Bean
-    fun openProductClient(): OpenProductClient {
-        return OpenProductClient()
-    }
+    fun openProductClient(): OpenProductClient = OpenProductClient()
 }

@@ -16,7 +16,12 @@
 
 package com.ritense.openproduct.plugin
 
-import com.ritense.openproduct.client.*
+import com.ritense.openproduct.client.DataBindingConfig
+import com.ritense.openproduct.client.EigenaarRequest
+import com.ritense.openproduct.client.FrequentieEnum
+import com.ritense.openproduct.client.OpenProductClient
+import com.ritense.openproduct.client.ProductRequest
+import com.ritense.openproduct.client.StatusEnum
 import com.ritense.plugin.annotation.Plugin
 import com.ritense.plugin.annotation.PluginAction
 import com.ritense.plugin.annotation.PluginActionProperty
@@ -30,12 +35,12 @@ import org.operaton.bpm.engine.delegate.DelegateExecution
 @Plugin(
     key = "openproduct",
     title = "Open Product",
-    description = "Plugin for interacting with the Open Product API"
+    description = "Plugin for interacting with the Open Product API",
 )
 class OpenProductPlugin(
     pluginService: PluginService,
     private val openProductClient: OpenProductClient,
-    private val valueResolverService: ValueResolverService
+    private val valueResolverService: ValueResolverService,
 ) {
     @PluginProperty(key = "baseUrl", secret = false, required = true)
     lateinit var baseUrl: String
@@ -51,13 +56,14 @@ class OpenProductPlugin(
     )
     fun getProduct(
         execution: DelegateExecution,
-        @PluginActionProperty productUuid: String
+        @PluginActionProperty productUuid: String,
     ) {
-        val result = openProductClient.getProduct(
-            baseUrl,
-            authenticationPluginConfiguration,
-            productUuid
-        )
+        val result =
+            openProductClient.getProduct(
+                baseUrl,
+                authenticationPluginConfiguration,
+                productUuid,
+            )
 
         execution.setVariable("resultaatPV", "Product: $result")
     }
@@ -68,13 +74,12 @@ class OpenProductPlugin(
         description = "Retrieve all products plugin action",
         activityTypes = [ActivityTypeWithEventName.SERVICE_TASK_START],
     )
-    fun getAllProducts(
-        execution: DelegateExecution
-    ) {
-        val result = openProductClient.getAllProducts(
-            baseUrl,
-            authenticationPluginConfiguration
-        )
+    fun getAllProducts(execution: DelegateExecution) {
+        val result =
+            openProductClient.getAllProducts(
+                baseUrl,
+                authenticationPluginConfiguration,
+            )
 
         execution.setVariable("resultaatPV", "Product: $result")
     }
@@ -96,30 +101,32 @@ class OpenProductPlugin(
         @PluginActionProperty productPrijs: String,
         @PluginActionProperty productStatus: String,
         @PluginActionProperty productFrequentie: String,
-        @PluginActionProperty gepubliceerd: java.lang.Boolean?
+        @PluginActionProperty gepubliceerd: java.lang.Boolean?,
     ) {
         val freqEnum = toFreqEnum(productFrequentie)
         val statusEnum = toStatusEnum(productStatus)
 
-        val resultaat = openProductClient.createProduct(
-            baseUrl,
-            authenticationPluginConfiguration,
-            ProductRequest(
-                naam = productNaam,
-                producttypeUuid = productTypeUuid,
-                eigenaren = listOf(
-                    EigenaarRequest(
-                        bsn = eigenaarBsn
-                    )
+        val resultaat =
+            openProductClient.createProduct(
+                baseUrl,
+                authenticationPluginConfiguration,
+                ProductRequest(
+                    naam = productNaam,
+                    producttypeUuid = productTypeUuid,
+                    eigenaren =
+                        listOf(
+                            EigenaarRequest(
+                                bsn = eigenaarBsn,
+                            ),
+                        ),
+                    gepubliceerd = gepubliceerd as Boolean?,
+                    aanvraagZaakUrn = aanvraagZaakUrn,
+                    aanvraagZaakUrl = aanvraagZaakUrl,
+                    prijs = productPrijs,
+                    frequentie = freqEnum,
+                    status = statusEnum,
                 ),
-                gepubliceerd = gepubliceerd as Boolean?,
-                aanvraagZaakUrn = aanvraagZaakUrn,
-                aanvraagZaakUrl = aanvraagZaakUrl,
-                prijs = productPrijs,
-                frequentie = freqEnum,
-                status = statusEnum
             )
-        )
         execution.setVariable("resultaatPV", "Product aangemaakt: $productNaam")
     }
 
@@ -140,31 +147,33 @@ class OpenProductPlugin(
         @PluginActionProperty gepubliceerd: Boolean,
         @PluginActionProperty productPrijs: String,
         @PluginActionProperty productFrequentie: String,
-        @PluginActionProperty productStatus: String
+        @PluginActionProperty productStatus: String,
     ) {
         val freqEnum = toFreqEnum(productFrequentie)
         val statusEnum = toStatusEnum(productStatus)
 
-        val resultaat = openProductClient.updateProduct(
-            baseUrl,
-            authenticationPluginConfiguration,
-            ProductRequest(
-                uuid = productUuid,
-                naam = productNaam,
-                producttypeUuid = productTypeUuid,
-                eigenaren = listOf(
-                    EigenaarRequest(
-                        bsn = eigenaarBsn
-                    )
+        val resultaat =
+            openProductClient.updateProduct(
+                baseUrl,
+                authenticationPluginConfiguration,
+                ProductRequest(
+                    uuid = productUuid,
+                    naam = productNaam,
+                    producttypeUuid = productTypeUuid,
+                    eigenaren =
+                        listOf(
+                            EigenaarRequest(
+                                bsn = eigenaarBsn,
+                            ),
+                        ),
+                    gepubliceerd = gepubliceerd as Boolean?,
+                    aanvraagZaakUrn = aanvraagZaakUrn,
+                    aanvraagZaakUrl = aanvraagZaakUrl,
+                    prijs = productPrijs,
+                    frequentie = freqEnum,
+                    status = statusEnum,
                 ),
-                gepubliceerd = gepubliceerd as Boolean?,
-                aanvraagZaakUrn = aanvraagZaakUrn,
-                aanvraagZaakUrl = aanvraagZaakUrl,
-                prijs = productPrijs,
-                frequentie = freqEnum,
-                status = statusEnum
             )
-        )
 
         execution.setVariable("resultaatPV", "Product gewijzigd met UUID: $productUuid")
     }
@@ -177,28 +186,28 @@ class OpenProductPlugin(
     )
     fun deleteProduct(
         execution: DelegateExecution,
-        @PluginActionProperty productUuid: String
+        @PluginActionProperty productUuid: String,
     ) {
-        val result = openProductClient.deleteProduct(
-            baseUrl,
-            authenticationPluginConfiguration,
-            productUuid
-        )
+        val result =
+            openProductClient.deleteProduct(
+                baseUrl,
+                authenticationPluginConfiguration,
+                productUuid,
+            )
 
         execution.setVariable("resultaatPV", "Product verwijderd met UUID: $productUuid")
     }
 
-    fun toFreqEnum(frequentie: String): FrequentieEnum {
-        return when (frequentie) {
+    fun toFreqEnum(frequentie: String): FrequentieEnum =
+        when (frequentie) {
             "eenmalig" -> FrequentieEnum.EENMALIG
             "jaarlijks" -> FrequentieEnum.JAARLIJKS
             "maandelijks" -> FrequentieEnum.MAANDELIJKS
             else -> throw IllegalArgumentException("Ongeldige frequentie: $frequentie")
         }
-    }
 
-    fun toStatusEnum(status: String): StatusEnum {
-        return when (status) {
+    fun toStatusEnum(status: String): StatusEnum =
+        when (status) {
             "initieel" -> StatusEnum.INITIEEL
             "gereed" -> StatusEnum.GEREED
             "actief" -> StatusEnum.ACTIEF
@@ -207,6 +216,4 @@ class OpenProductPlugin(
             "verlopen" -> StatusEnum.VERLOPEN
             else -> throw IllegalArgumentException("Ongeldige status: $status")
         }
-    }
-
 }

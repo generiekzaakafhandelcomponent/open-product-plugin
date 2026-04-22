@@ -37,7 +37,7 @@ data class ProductRequest(
     @JsonProperty("verbruiksobject")
     val verbruiksobject: Map<String, Any>? = null,
     @JsonProperty("dataobject")
-    val dataobject: Map<String, Any>? = null
+    val dataobject: Map<String, Any>? = null,
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -51,14 +51,13 @@ data class EigenaarRequest(
     @JsonProperty("vestigingsnummer")
     val vestigingsnummer: String? = null,
     @JsonProperty("klantnummer")
-    val klantnummer: String? = null
+    val klantnummer: String? = null,
 )
 
 data class DocumentRequest(
     @JsonProperty("uuid")
-    val uuid: UUID
+    val uuid: UUID,
 )
-
 
 data class Product(
     @JsonProperty("uuid")
@@ -97,7 +96,7 @@ data class Product(
 
 data class ProductType(
     @JsonProperty("uuid")
-    val uuid: UUID
+    val uuid: UUID,
 )
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -111,10 +110,10 @@ data class Eigenaar(
     @JsonProperty("vestigingsnummer")
     val vestigingsnummer: String?,
     @JsonProperty("klantnummer")
-    val klantnummer: String?
+    val klantnummer: String?,
 )
 
 data class Document(
     @JsonProperty("url")
-    val url: String
+    val url: String,
 )
