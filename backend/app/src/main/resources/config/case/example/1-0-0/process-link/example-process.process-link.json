@@ -6,14 +6,10 @@
         "formDefinitionName": "start-form-example"
     },
     {
-        "activityId": "open-product-action",
+        "activityId": "openproduct-get-all-products",
         "activityType": "bpmn:ServiceTask:start",
         "processLinkType": "plugin",
-        "pluginDefinitionKey": "open-product",
-        "pluginActionDefinitionKey": "open-product-action",
-        "pluginConfigurationId": "4ac9a49f-4aeb-4f91-86d9-853fd95a1b33",
-        "actionProperties": {
-            "message": "Hello from the open-product plugin!"
-        }
+        "pluginActionDefinitionKey": "get-all-products",
+        "pluginConfigurationId": "4ac9a49f-4aeb-4f91-86d9-853fd95a1b33"
     }
 ]

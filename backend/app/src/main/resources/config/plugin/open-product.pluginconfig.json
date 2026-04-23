@@ -1,0 +1,19 @@
+[
+    {
+        "id": "41f00cf2-17ec-40b8-a42f-bd9024a08892",
+        "title": "Token Authentication (Autodeployed)",
+        "pluginDefinitionKey": "tokenauthentication",
+        "properties": {
+            "token": "${TOKEN_AUTHENTICATION_TOKEN}"
+        }
+    },
+    {
+        "id": "4ac9a49f-4aeb-4f91-86d9-853fd95a1b33",
+        "title": "Open Product (Autodeployed)",
+        "pluginDefinitionKey": "openproduct",
+        "properties": {
+            "baseUrl": "${OPEN_PRODUCT_BASE_URL}",
+            "authenticationPluginConfiguration": "41f00cf2-17ec-40b8-a42f-bd9024a08892"
+        }
+    }
+]

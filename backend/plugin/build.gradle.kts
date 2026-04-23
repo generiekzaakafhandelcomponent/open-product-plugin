@@ -17,6 +17,15 @@
 val jacksonModuleKotlinVersion: String by project
 val tokenAuthenticationVersion: String by project
 
+dockerCompose {
+    setProjectName("open-product")
+    isRequiredBy(project.tasks.integrationTesting)
+
+    tasks.integrationTesting {
+        useComposeFiles.addAll("$rootDir/docker-resources/docker-compose-base-test.yml")
+    }
+}
+
 dependencies {
     compileOnly("com.ritense.valtimo:contract")
     compileOnly("com.ritense.valtimo:core")
@@ -35,6 +44,24 @@ dependencies {
             attributes("Implementation-Title" to "Open Product plugin")
         }
     }
+
+    // Testing
+    testImplementation("com.ritense.valtimo:building-block")
+    testImplementation("com.ritense.valtimo:contract")
+    testImplementation("com.ritense.valtimo:core")
+    testImplementation("com.ritense.valtimo:plugin")
+    testImplementation("com.ritense.valtimo:temporary-resource-storage")
+    testImplementation("com.ritense.valtimo:test-utils-common")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+    testImplementation("org.postgresql:postgresql")
+
+    testImplementation("com.ritense.valtimo:case")
+    testImplementation("com.ritense.valtimo:plugin-valtimo")
+    testImplementation("com.ritense.valtimo:process-document")
+    testImplementation("com.ritense.valtimo:value-resolver")
+    testImplementation("com.ritense.valtimoplugins:token-authentication:$tokenAuthenticationVersion")
 }
 
 apply(from = "gradle/publishing.gradle")
