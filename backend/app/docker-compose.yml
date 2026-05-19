@@ -1,4 +1,4 @@
-name: plugin-docker-compose
+name: open-product-plugin
 
 services:
   plugin-keycloak:
@@ -288,6 +288,62 @@ services:
       - ./imports/objecttypes-api/init:/app/init
     depends_on:
       objecttypen-api:
+        condition: service_healthy
+
+  open-product:
+    image: maykinmedia/open-product:1.7.1
+    container_name: plugin-docker-compose-open-product
+    platform: linux/amd64
+    profiles:
+      - zgw
+      - product
+    ports:
+      - "8020:8000"
+    depends_on:
+      - open-product-database
+    environment: &openproduct-env
+        DJANGO_SETTINGS_MODULE: openproduct.conf.docker
+        SECRET_KEY: ${SECRET_KEY:-django-insecure-@4wj9(+*bu7*v&%on7+e_8!d1ckl%r=6+sz#d2!pw^@lb0+=}
+        DB_NAME: openproduct
+        DB_USER: openproduct
+        DB_PASSWORD: openproduct
+        DB_HOST: open-product-database
+        DISABLE_2FA: true
+        OPENPRODUCT_SUPERUSER_USERNAME: admin
+        OPENPRODUCT_SUPERUSER_PASSWORD: admin
+        CACHE_DEFAULT: objecten-api-redis:6379/0
+        CELERY_BROKER_URL: redis://objecten-api-redis:6379/1
+        CELERY_RESULT_BACKEND: redis://objecten-api-redis:6379/1
+        # Only allow all hosts for development/testing purposes!
+        ALLOWED_HOSTS: '*'
+        OTEL_SDK_DISABLED: true
+
+  open-product-database:
+    image: postgres:17.4
+    container_name: plugin-docker-compose-open-product-database
+    profiles:
+      - zgw
+      - product
+    ports:
+      - "54325:5432"
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    volumes:
+      - ./imports/open-product/database/docker-init-db.sql:/docker-entrypoint-initdb.d/init_db.sql
+
+  open-product-api-import:
+    image: maykinmedia/open-product:1.7.1
+    container_name: plugin-docker-compose-open-product-api-import
+    platform: linux/amd64
+    profiles:
+      - zgw
+      - product
+    environment: *openproduct-env
+    command: sh init/init.sh
+    volumes:
+      - ./imports/open-product/init:/app/init
+    depends_on:
+      open-product:
         condition: service_healthy
 
   open-notificaties-rabbitmq:
