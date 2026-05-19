@@ -95,4 +95,12 @@
             [required]="true"
     >
     </v-input>
+    <v-input
+            name="dataobjectVariabelNaam"
+            [title]="'dataobjectVariabelNaam' | pluginTranslate: pluginId | async"
+            [margin]="true"
+            [defaultValue]="obs.prefill?.dataobjectVariabelNaam"
+            [disabled]="obs.disabled"
+    >
+    </v-input>
 </v-form>

@@ -16,7 +16,6 @@
 
 package com.ritense.openproduct.plugin
 
-import com.ritense.openproduct.client.DataBindingConfig
 import com.ritense.openproduct.client.EigenaarRequest
 import com.ritense.openproduct.client.FrequentieEnum
 import com.ritense.openproduct.client.OpenProductClient
@@ -95,16 +94,20 @@ class OpenProductPlugin(
         @PluginActionProperty productNaam: String,
         @PluginActionProperty productTypeUuid: String,
         @PluginActionProperty eigenaarBsn: String,
-        @PluginActionProperty eigenaarData: List<DataBindingConfig>?,
         @PluginActionProperty aanvraagZaakUrn: String?,
         @PluginActionProperty aanvraagZaakUrl: String?,
         @PluginActionProperty productPrijs: String,
         @PluginActionProperty productStatus: String,
         @PluginActionProperty productFrequentie: String,
         @PluginActionProperty gepubliceerd: java.lang.Boolean?,
+        @PluginActionProperty dataobjectVariabelNaam: String?,
     ) {
         val freqEnum = toFreqEnum(productFrequentie)
         val statusEnum = toStatusEnum(productStatus)
+
+        @Suppress("UNCHECKED_CAST")
+        val dataobjectMap = dataobjectVariabelNaam
+            ?.let { execution.getVariable(it) as? Map<String, Any> }
 
         val resultaat =
             openProductClient.createProduct(
@@ -125,6 +128,7 @@ class OpenProductPlugin(
                     prijs = productPrijs,
                     frequentie = freqEnum,
                     status = statusEnum,
+                    dataobject = dataobjectMap,
                 ),
             )
         execution.setVariable("resultaatPV", "Product aangemaakt: $productNaam")
@@ -148,9 +152,14 @@ class OpenProductPlugin(
         @PluginActionProperty productPrijs: String,
         @PluginActionProperty productFrequentie: String,
         @PluginActionProperty productStatus: String,
+        @PluginActionProperty dataobjectVariabelNaam: String?,
     ) {
         val freqEnum = toFreqEnum(productFrequentie)
         val statusEnum = toStatusEnum(productStatus)
+
+        @Suppress("UNCHECKED_CAST")
+        val dataobjectMap = dataobjectVariabelNaam
+            ?.let { execution.getVariable(it) as? Map<String, Any> }
 
         val resultaat =
             openProductClient.updateProduct(
@@ -172,6 +181,7 @@ class OpenProductPlugin(
                     prijs = productPrijs,
                     frequentie = freqEnum,
                     status = statusEnum,
+                    dataobject = dataobjectMap,
                 ),
             )
 

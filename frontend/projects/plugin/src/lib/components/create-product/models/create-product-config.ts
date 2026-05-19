@@ -8,6 +8,7 @@ interface CreateProductConfig {
     productPrijs: string;
     productFrequentie: string;
     productStatus: string;
+    dataobjectVariabelNaam?: string;
 }
 
 export {CreateProductConfig};

@@ -65,6 +65,7 @@ const openProductPluginSpecification: PluginSpecification = {
             productStatus: 'De status van het product',
             resultaatPV: 'De naam van de process variable waar het resultaat in komt',
             authenticationPluginConfiguration: 'Selecteer de authenticatie plugin configuratie',
+            dataobjectVariabelNaam: 'Naam van de procesvariabele voor het dataobject (optioneel)',
         },
         en: {
             title: 'Open Product Plugin',
@@ -87,6 +88,7 @@ const openProductPluginSpecification: PluginSpecification = {
             productStatus: 'The product’s status',
             resultaatPV: 'The name of the process variable that will contain the result',
             authenticationPluginConfiguration: 'Select the authentication plugin configuration',
+            dataobjectVariabelNaam: 'Process variable name for the data object (optional)',
         },
         de: {
             title: 'Open Product Plugin',
@@ -104,6 +106,7 @@ const openProductPluginSpecification: PluginSpecification = {
             productStatus: 'Der Status des Produkts',
             resultaatPV: 'Der Name der Prozessvariablen, in der das Ergebnis gespeichert wird',
             authenticationPluginConfiguration: 'Wählen Sie die Authentifizierungs-Plugin-Konfiguration aus',
+            dataobjectVariabelNaam: 'Prozessvariablenname für das Datenobjekt (optional)',
         }
     }
 };
