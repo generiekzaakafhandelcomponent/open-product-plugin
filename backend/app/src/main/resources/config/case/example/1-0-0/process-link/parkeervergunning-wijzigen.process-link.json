@@ -1,0 +1,45 @@
+[
+    {
+        "activityId": "pw-start-event",
+        "activityType": "bpmn:StartEvent:start",
+        "processLinkType": "form",
+        "formDefinitionName": "parkeervergunning-wijzigen-start"
+    },
+    {
+        "activityId": "haal-parkeervergunningen-op",
+        "activityType": "bpmn:ServiceTask:start",
+        "processLinkType": "plugin",
+        "pluginConfigurationId": "4ac9a49f-4aeb-4f91-86d9-853fd95a1b33",
+        "pluginActionDefinitionKey": "get-all-products",
+        "actionProperties": {
+            "producttypeUuid": "9903945d-b639-49da-85ed-7305817f47ad",
+            "resultaatVariabelNaam": "alleProducten"
+        }
+    },
+    {
+        "activityId": "selecteer-parkeervergunning",
+        "activityType": "bpmn:UserTask:create",
+        "processLinkType": "form",
+        "formDefinitionName": "parkeervergunning-selecteer"
+    },
+    {
+        "activityId": "wijzig-parkeervergunning",
+        "activityType": "bpmn:ServiceTask:start",
+        "processLinkType": "plugin",
+        "pluginConfigurationId": "4ac9a49f-4aeb-4f91-86d9-853fd95a1b33",
+        "pluginActionDefinitionKey": "update-product",
+        "actionProperties": {
+            "productUuid": "pv:geselecteerdProductUuid",
+            "productNaam": "pv:productNaam",
+            "productTypeUuid": "9903945d-b639-49da-85ed-7305817f47ad",
+            "eigenaarBsn": "pv:eigenaarBsn",
+            "aanvraagZaakUrn": "pv:aanvraagZaakUrn",
+            "aanvraagZaakUrl": "pv:aanvraagZaakUrl",
+            "gepubliceerd": "pv:gepubliceerd",
+            "productPrijs": "pv:productPrijs",
+            "productFrequentie": "pv:productFrequentie",
+            "productStatus": "pv:productStatus",
+            "dataobjectVariabelNaam": "bijgewerktDataobject"
+        }
+    }
+]

@@ -1,0 +1,149 @@
+{
+    "display": "form",
+    "components": [
+        {
+            "key": "html",
+            "type": "htmlelement",
+            "input": false,
+            "label": "Instructies",
+            "content": "<p>Start een nieuwe <strong>Parkeervergunning</strong>. Vul het kenteken en de parkeerzone in. Het producttype is vooraf ingesteld op de definitie van de parkeervergunning.</p>",
+            "tableView": false,
+            "refreshOnChange": false
+        },
+        {
+            "key": "productNaam",
+            "type": "textfield",
+            "input": true,
+            "label": "Naam van het product",
+            "tableView": true,
+            "defaultValue": "Parkeervergunning",
+            "validate": { "required": true },
+            "applyMaskOn": "change"
+        },
+        {
+            "key": "productTypeUuid",
+            "type": "hidden",
+            "input": true,
+            "label": "UUID van het producttype",
+            "tableView": false,
+            "defaultValue": "9903945d-b639-49da-85ed-7305817f47ad"
+        },
+        {
+            "key": "eigenaarBsn",
+            "type": "textfield",
+            "input": true,
+            "label": "BSN van de aanvrager",
+            "tableView": true,
+            "validate": { "required": true },
+            "applyMaskOn": "change"
+        },
+        {
+            "key": "productPrijs",
+            "type": "textfield",
+            "input": true,
+            "label": "Prijs (bijv. 35.00)",
+            "tableView": true,
+            "defaultValue": "35.00",
+            "validate": { "required": true },
+            "applyMaskOn": "change"
+        },
+        {
+            "key": "productStatus",
+            "type": "select",
+            "input": true,
+            "label": "Status",
+            "tableView": true,
+            "defaultValue": "actief",
+            "validate": { "required": true },
+            "data": {
+                "values": [
+                    { "label": "Actief", "value": "actief" },
+                    { "label": "Verlopen", "value": "verlopen" }
+                ]
+            }
+        },
+        {
+            "key": "productFrequentie",
+            "type": "select",
+            "input": true,
+            "label": "Betalingsfrequentie",
+            "tableView": true,
+            "defaultValue": "jaarlijks",
+            "validate": { "required": true },
+            "data": {
+                "values": [
+                    { "label": "Eenmalig", "value": "eenmalig" },
+                    { "label": "Maandelijks", "value": "maandelijks" },
+                    { "label": "Jaarlijks", "value": "jaarlijks" }
+                ]
+            }
+        },
+        {
+            "key": "gepubliceerd",
+            "type": "checkbox",
+            "input": true,
+            "label": "Gepubliceerd (zichtbaar voor publiek)",
+            "tableView": false,
+            "defaultValue": true
+        },
+        {
+            "key": "aanvraagZaakUrn",
+            "type": "textfield",
+            "input": true,
+            "label": "Aanvraag zaak URN (optioneel)",
+            "tableView": false,
+            "applyMaskOn": "change"
+        },
+        {
+            "key": "aanvraagZaakUrl",
+            "type": "textfield",
+            "input": true,
+            "label": "Aanvraag zaak URL (optioneel)",
+            "tableView": false,
+            "applyMaskOn": "change"
+        },
+        {
+            "key": "productDataobject",
+            "type": "container",
+            "input": true,
+            "label": "Parkeervergunning gegevens (initieel)",
+            "tableView": false,
+            "components": [
+                {
+                    "key": "kenteken",
+                    "type": "textfield",
+                    "input": true,
+                    "label": "Kenteken",
+                    "tableView": true,
+                    "validate": { "required": true },
+                    "applyMaskOn": "change"
+                }
+            ]
+        },
+        {
+            "key": "bijgewerktDataobject",
+            "type": "container",
+            "input": true,
+            "label": "Parkeervergunning gegevens (na wijziging)",
+            "tableView": false,
+            "components": [
+                {
+                    "key": "kenteken",
+                    "type": "textfield",
+                    "input": true,
+                    "label": "Kenteken (bijgewerkt)",
+                    "tableView": true,
+                    "applyMaskOn": "change"
+                }
+            ]
+        },
+        {
+            "key": "submit",
+            "type": "button",
+            "input": true,
+            "label": "Parkeervergunning aanvragen",
+            "tableView": false,
+            "disableOnInvalid": true
+        }
+    ]
+}

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  id="Definitions_pw"
+                  targetNamespace="http://bpmn.io/schema/bpmn"
+                  exporter="Camunda Modeler"
+                  exporterVersion="5.39.0">
+  <bpmn:collaboration id="Collaboration_pw">
+    <bpmn:participant id="pw-participant" name="Parkeervergunning wijzigen" processRef="parkeervergunning-wijzigen"/>
+  </bpmn:collaboration>
+  <bpmn:process id="parkeervergunning-wijzigen" name="Parkeervergunning wijzigen" isExecutable="true">
+    <bpmn:startEvent id="pw-start-event" name="Wijziging gestart">
+      <bpmn:outgoing>Flow_pw_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="haal-parkeervergunningen-op" name="Haal parkeervergunningen op">
+      <bpmn:incoming>Flow_pw_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_pw_2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="selecteer-parkeervergunning" name="Selecteer te wijzigen parkeervergunning">
+      <bpmn:incoming>Flow_pw_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_pw_3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="wijzig-parkeervergunning" name="Wijzig parkeervergunning">
+      <bpmn:incoming>Flow_pw_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_pw_4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="pw-end-event" name="Wijziging voltooid">
+      <bpmn:incoming>Flow_pw_4</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_pw_1" sourceRef="pw-start-event" targetRef="haal-parkeervergunningen-op"/>
+    <bpmn:sequenceFlow id="Flow_pw_2" sourceRef="haal-parkeervergunningen-op" targetRef="selecteer-parkeervergunning"/>
+    <bpmn:sequenceFlow id="Flow_pw_3" sourceRef="selecteer-parkeervergunning" targetRef="wijzig-parkeervergunning"/>
+    <bpmn:sequenceFlow id="Flow_pw_4" sourceRef="wijzig-parkeervergunning" targetRef="pw-end-event"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_pw">
+    <bpmndi:BPMNPlane id="BPMNPlane_pw" bpmnElement="Collaboration_pw">
+      <bpmndi:BPMNShape id="Participant_pw_di" bpmnElement="pw-participant" isHorizontal="true">
+        <dc:Bounds x="160" y="100" width="900" height="200"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_pw_di" bpmnElement="pw-start-event">
+        <dc:Bounds x="232" y="182" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="210" y="225" width="80" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_haal_di" bpmnElement="haal-parkeervergunningen-op">
+        <dc:Bounds x="340" y="160" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_selecteer_di" bpmnElement="selecteer-parkeervergunning">
+        <dc:Bounds x="520" y="160" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_wijzig_di" bpmnElement="wijzig-parkeervergunning">
+        <dc:Bounds x="700" y="160" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_pw_di" bpmnElement="pw-end-event">
+        <dc:Bounds x="882" y="182" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="858" y="225" width="85" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_pw_1_di" bpmnElement="Flow_pw_1">
+        <di:waypoint x="268" y="200"/>
+        <di:waypoint x="340" y="200"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_pw_2_di" bpmnElement="Flow_pw_2">
+        <di:waypoint x="440" y="200"/>
+        <di:waypoint x="520" y="200"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_pw_3_di" bpmnElement="Flow_pw_3">
+        <di:waypoint x="620" y="200"/>
+        <di:waypoint x="700" y="200"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_pw_4_di" bpmnElement="Flow_pw_4">
+        <di:waypoint x="800" y="200"/>
+        <di:waypoint x="882" y="200"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

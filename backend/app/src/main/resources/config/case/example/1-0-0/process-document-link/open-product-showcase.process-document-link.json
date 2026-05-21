@@ -1,0 +1,7 @@
+[
+    {
+        "processDefinitionKey": "open-product-showcase",
+        "canInitializeDocument": true,
+        "startableByUser": true
+    }
+]

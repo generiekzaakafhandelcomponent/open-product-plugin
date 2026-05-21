@@ -1,0 +1,47 @@
+[
+    {
+        "activityId": "showcase-start-event",
+        "activityType": "bpmn:StartEvent:start",
+        "processLinkType": "form",
+        "formDefinitionName": "open-product-showcase-start"
+    },
+    {
+        "activityId": "openproduct-create-product",
+        "activityType": "bpmn:ServiceTask:start",
+        "processLinkType": "plugin",
+        "pluginConfigurationId": "4ac9a49f-4aeb-4f91-86d9-853fd95a1b33",
+        "pluginActionDefinitionKey": "create-product",
+        "actionProperties": {
+            "productNaam": "pv:productNaam",
+            "productTypeUuid": "pv:productTypeUuid",
+            "eigenaarBsn": "pv:eigenaarBsn",
+            "aanvraagZaakUrn": "pv:aanvraagZaakUrn",
+            "aanvraagZaakUrl": "pv:aanvraagZaakUrl",
+            "productPrijs": "pv:productPrijs",
+            "productStatus": "pv:productStatus",
+            "productFrequentie": "pv:productFrequentie",
+            "gepubliceerd": "pv:gepubliceerd",
+            "dataobjectVariabelNaam": "productDataobject"
+        }
+    },
+    {
+        "activityId": "openproduct-update-product",
+        "activityType": "bpmn:ServiceTask:start",
+        "processLinkType": "plugin",
+        "pluginConfigurationId": "4ac9a49f-4aeb-4f91-86d9-853fd95a1b33",
+        "pluginActionDefinitionKey": "update-product",
+        "actionProperties": {
+            "productUuid": "pv:aangemaaktProductUuid",
+            "productNaam": "pv:productNaam",
+            "productTypeUuid": "pv:productTypeUuid",
+            "eigenaarBsn": "pv:eigenaarBsn",
+            "aanvraagZaakUrn": "pv:aanvraagZaakUrn",
+            "aanvraagZaakUrl": "pv:aanvraagZaakUrl",
+            "productPrijs": "pv:productPrijs",
+            "productStatus": "pv:productStatus",
+            "productFrequentie": "pv:productFrequentie",
+            "gepubliceerd": "pv:gepubliceerd",
+            "dataobjectVariabelNaam": "bijgewerktDataobject"
+        }
+    }
+]

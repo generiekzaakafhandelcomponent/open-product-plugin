@@ -1,0 +1,198 @@
+{
+  "display": "form",
+  "components": [
+    {
+      "key": "html",
+      "type": "htmlelement",
+      "input": false,
+      "label": "Beschikbare parkeervergunningen",
+      "content": "<p>De volgende parkeervergunningen zijn opgehaald. Noteer de UUID van de vergunning die je wilt wijzigen en vul deze hieronder in.</p><p><strong>Beschikbare vergunningen (naam | UUID | status):</strong></p>",
+      "tableView": false,
+      "refreshOnChange": false
+    },
+    {
+      "key": "geselecteerdProductUuid",
+      "type": "textfield",
+      "input": true,
+      "label": "UUID van de te wijzigen parkeervergunning",
+      "validate": { "required": true },
+      "tableView": true,
+      "attributes": {
+        "data-testid": "parkeervergunning-selecteer-geselecteerdProductUuid"
+      },
+      "properties": {
+        "targetKey": "pv:geselecteerdProductUuid"
+      },
+      "applyMaskOn": "change"
+    },
+    {
+      "key": "productNaam",
+      "type": "textfield",
+      "input": true,
+      "label": "Naam van het product",
+      "validate": { "required": true },
+      "tableView": true,
+      "attributes": {
+        "data-testid": "parkeervergunning-selecteer-productNaam"
+      },
+      "properties": {
+        "targetKey": "pv:productNaam"
+      },
+      "applyMaskOn": "change",
+      "defaultValue": "Parkeervergunning"
+    },
+    {
+      "key": "eigenaarBsn",
+      "type": "textfield",
+      "input": true,
+      "label": "BSN van de eigenaar",
+      "validate": { "required": true },
+      "tableView": true,
+      "attributes": {
+        "data-testid": "parkeervergunning-selecteer-eigenaarBsn"
+      },
+      "properties": {
+        "targetKey": "pv:eigenaarBsn"
+      },
+      "applyMaskOn": "change"
+    },
+    {
+      "key": "productPrijs",
+      "type": "textfield",
+      "input": true,
+      "label": "Prijs",
+      "validate": { "required": true },
+      "tableView": true,
+      "attributes": {
+        "data-testid": "parkeervergunning-selecteer-productPrijs"
+      },
+      "properties": {
+        "targetKey": "pv:productPrijs"
+      },
+      "applyMaskOn": "change",
+      "defaultValue": "35.00"
+    },
+    {
+      "key": "productStatus",
+      "type": "select",
+      "input": true,
+      "label": "Status",
+      "widget": "choicesjs",
+      "validate": { "required": true },
+      "tableView": true,
+      "attributes": {
+        "data-testid": "parkeervergunning-selecteer-productStatus"
+      },
+      "properties": {
+        "targetKey": "pv:productStatus"
+      },
+      "defaultValue": "actief",
+      "data": {
+        "values": [
+          { "label": "Actief", "value": "actief" },
+          { "label": "Verlopen", "value": "verlopen" }
+        ]
+      }
+    },
+    {
+      "key": "productFrequentie",
+      "type": "select",
+      "input": true,
+      "label": "Betalingsfrequentie",
+      "widget": "choicesjs",
+      "validate": { "required": true },
+      "tableView": true,
+      "attributes": {
+        "data-testid": "parkeervergunning-selecteer-productFrequentie"
+      },
+      "properties": {
+        "targetKey": "pv:productFrequentie"
+      },
+      "defaultValue": "jaarlijks",
+      "data": {
+        "values": [
+          { "label": "Eenmalig", "value": "eenmalig" },
+          { "label": "Maandelijks", "value": "maandelijks" },
+          { "label": "Jaarlijks", "value": "jaarlijks" }
+        ]
+      }
+    },
+    {
+      "key": "gepubliceerd",
+      "type": "checkbox",
+      "input": true,
+      "label": "Gepubliceerd",
+      "tableView": false,
+      "attributes": {
+        "data-testid": "parkeervergunning-selecteer-gepubliceerd"
+      },
+      "properties": {
+        "targetKey": "pv:gepubliceerd"
+      },
+      "defaultValue": true
+    },
+    {
+      "key": "aanvraagZaakUrn",
+      "type": "textfield",
+      "input": true,
+      "label": "Aanvraag zaak URN (optioneel)",
+      "tableView": false,
+      "attributes": {
+        "data-testid": "parkeervergunning-selecteer-aanvraagZaakUrn"
+      },
+      "properties": {
+        "targetKey": "pv:aanvraagZaakUrn"
+      },
+      "applyMaskOn": "change"
+    },
+    {
+      "key": "aanvraagZaakUrl",
+      "type": "textfield",
+      "input": true,
+      "label": "Aanvraag zaak URL (optioneel)",
+      "tableView": false,
+      "attributes": {
+        "data-testid": "parkeervergunning-selecteer-aanvraagZaakUrl"
+      },
+      "properties": {
+        "targetKey": "pv:aanvraagZaakUrl"
+      },
+      "applyMaskOn": "change"
+    },
+    {
+      "key": "bijgewerktDataobject",
+      "type": "container",
+      "input": true,
+      "label": "Nieuw kenteken",
+      "tableView": false,
+      "attributes": {
+        "data-testid": "parkeervergunning-selecteer-bijgewerktDataobject"
+      },
+      "properties": {
+        "targetKey": "pv:bijgewerktDataobject"
+      },
+      "components": [
+        {
+          "key": "kenteken",
+          "type": "textfield",
+          "input": true,
+          "label": "Kenteken",
+          "validate": { "required": true },
+          "tableView": true,
+          "attributes": {
+            "data-testid": "parkeervergunning-selecteer-kenteken"
+          },
+          "applyMaskOn": "change"
+        }
+      ]
+    },
+    {
+      "key": "submit",
+      "type": "button",
+      "input": true,
+      "label": "Parkeervergunning wijzigen",
+      "tableView": false,
+      "disableOnInvalid": true
+    }
+  ]
+}
