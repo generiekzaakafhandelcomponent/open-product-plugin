@@ -31,14 +31,14 @@ val configureEnvironment = extra["configureEnvironment"] as (task: ProcessForkOp
 dockerCompose {
     setProjectName("open-product-plugin")
     composeAdditionalArgs.addAll("--profile", "zgw")
-    // composeAdditionalArgs = ["--profile", "zgw", "--profile", "openformulieren", "--profile", "openklant"]
+  //  composeAdditionalArgs = ["--profile", "zgw", "--profile", "openformulieren", "--profile", "openklant"]
     stopContainers = false
     removeContainers = false
     removeVolumes = false
 }
 
 tasks.bootRun {
-    dependsOn("composeUp")
+  //  dependsOn("composeUp")
     systemProperty("spring.profiles.include", "dev")
     val t = this
     doFirst {

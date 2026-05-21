@@ -29,6 +29,7 @@ import com.ritense.plugin.service.PluginService
 import com.ritense.processlink.domain.ActivityTypeWithEventName
 import com.ritense.tokenauthentication.plugin.TokenAuthenticationPlugin
 import com.ritense.valueresolver.ValueResolverService
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.operaton.bpm.engine.delegate.DelegateExecution
 
 @Plugin(
@@ -73,14 +74,26 @@ class OpenProductPlugin(
         description = "Retrieve all products plugin action",
         activityTypes = [ActivityTypeWithEventName.SERVICE_TASK_START],
     )
-    fun getAllProducts(execution: DelegateExecution) {
+    fun getAllProducts(
+        execution: DelegateExecution,
+        @PluginActionProperty producttypeUuid: String?,
+        @PluginActionProperty resultaatVariabelNaam: String?,
+    ) {
         val result =
             openProductClient.getAllProducts(
                 baseUrl,
                 authenticationPluginConfiguration,
+                producttypeUuid,
             )
 
-        execution.setVariable("resultaatPV", "Product: $result")
+        val variabelNaam = resultaatVariabelNaam ?: "alleProducten"
+        execution.setVariable(variabelNaam, result)
+        execution.setVariable(
+            "${variabelNaam}Tekst",
+            result?.joinToString("\n") { "- ${it.naam ?: "(geen naam)"} | UUID: ${it.uuid} | Status: ${it.status}" }
+                ?: "(geen producten gevonden)",
+        )
+        execution.setVariable("resultaatPV", "Producten opgehaald: ${result?.size ?: 0}")
     }
 
     @PluginAction(
@@ -94,8 +107,8 @@ class OpenProductPlugin(
         @PluginActionProperty productNaam: String,
         @PluginActionProperty productTypeUuid: String,
         @PluginActionProperty eigenaarBsn: String,
-        @PluginActionProperty aanvraagZaakUrn: String?,
-        @PluginActionProperty aanvraagZaakUrl: String?,
+        @PluginActionProperty aanvraagZaakUrn: String,
+        @PluginActionProperty aanvraagZaakUrl: String,
         @PluginActionProperty productPrijs: String,
         @PluginActionProperty productStatus: String,
         @PluginActionProperty productFrequentie: String,
@@ -105,9 +118,13 @@ class OpenProductPlugin(
         val freqEnum = toFreqEnum(productFrequentie)
         val statusEnum = toStatusEnum(productStatus)
 
-        @Suppress("UNCHECKED_CAST")
         val dataobjectMap = dataobjectVariabelNaam
-            ?.let { execution.getVariable(it) as? Map<String, Any> }
+            ?.let {
+                val raw = execution.getVariable(it)
+                if (raw != null && raw !is Map<*, *>) {
+                    logger.warn("Expected Map for dataobject variable '$it' but got ${raw.javaClass}")
+                }
+                raw as? Map<String, Any> }
 
         val resultaat =
             openProductClient.createProduct(
@@ -131,6 +148,7 @@ class OpenProductPlugin(
                     dataobject = dataobjectMap,
                 ),
             )
+        execution.setVariable("aangemaaktProductUuid", resultaat?.uuid?.toString())
         execution.setVariable("resultaatPV", "Product aangemaakt: $productNaam")
     }
 
@@ -157,9 +175,14 @@ class OpenProductPlugin(
         val freqEnum = toFreqEnum(productFrequentie)
         val statusEnum = toStatusEnum(productStatus)
 
-        @Suppress("UNCHECKED_CAST")
         val dataobjectMap = dataobjectVariabelNaam
-            ?.let { execution.getVariable(it) as? Map<String, Any> }
+            ?.let {
+                val raw = execution.getVariable(it)
+                if (raw != null && raw !is Map<*, *>) {
+                    logger.warn("Expected Map for dataobject variable '$it' but got ${raw.javaClass}")
+                }
+                raw as? Map<String, Any>
+            }
 
         val resultaat =
             openProductClient.updateProduct(
@@ -226,4 +249,8 @@ class OpenProductPlugin(
             "verlopen" -> StatusEnum.VERLOPEN
             else -> throw IllegalArgumentException("Ongeldige status: $status")
         }
+
+    companion object {
+        private val logger = KotlinLogging.logger {}
+    }
 }

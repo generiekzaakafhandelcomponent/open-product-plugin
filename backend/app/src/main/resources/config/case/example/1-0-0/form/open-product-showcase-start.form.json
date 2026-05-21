@@ -1,149 +1,227 @@
 {
-    "display": "form",
-    "components": [
+  "display": "form",
+  "components": [
+    {
+      "key": "html",
+      "type": "htmlelement",
+      "input": false,
+      "label": "Instructies",
+      "content": "<p>Start een nieuwe <strong>Parkeervergunning</strong>. Vul het kenteken en de parkeerzone in. Het producttype is vooraf ingesteld op de definitie van de parkeervergunning.</p>",
+      "tableView": false,
+      "refreshOnChange": false
+    },
+    {
+      "key": "productNaam",
+      "type": "textfield",
+      "input": true,
+      "label": "Naam van het product",
+      "validate": {
+        "required": true
+      },
+      "tableView": true,
+      "attributes": {
+        "data-testid": "open-product-showcase-start-productNaam"
+      },
+      "properties": {
+        "targetKey": "pv:productNaam"
+      },
+      "applyMaskOn": "change",
+      "defaultValue": "Funenpark parkeergaraga 3A"
+    },
+    {
+      "key": "productTypeUuid",
+      "type": "hidden",
+      "input": true,
+      "label": "UUID van het producttype",
+      "tableView": false,
+      "attributes": {
+        "data-testid": "open-product-showcase-start-productTypeUuid"
+      },
+      "properties": {
+        "targetKey": "pv:productTypeUuid"
+      },
+      "defaultValue": "9903945d-b639-49da-85ed-7305817f47ad"
+    },
+    {
+      "key": "eigenaarBsn",
+      "type": "textfield",
+      "input": true,
+      "label": "BSN van de aanvrager",
+      "validate": {
+        "required": true
+      },
+      "tableView": true,
+      "attributes": {
+        "data-testid": "open-product-showcase-start-eigenaarBsn"
+      },
+      "properties": {
+        "targetKey": "pv:eigenaarBsn"
+      },
+      "applyMaskOn": "change",
+      "defaultValue": "022264541"
+    },
+    {
+      "key": "productPrijs",
+      "type": "textfield",
+      "input": true,
+      "label": "Prijs (bijv. 35.00)",
+      "validate": {
+        "required": true
+      },
+      "tableView": true,
+      "attributes": {
+        "data-testid": "open-product-showcase-start-productPrijs"
+      },
+      "properties": {
+        "targetKey": "pv:productPrijs"
+      },
+      "applyMaskOn": "change",
+      "defaultValue": "35.00"
+    },
+    {
+      "key": "productStatus",
+      "data": {
+        "values": [
+          {
+            "label": "Actief",
+            "value": "actief"
+          },
+          {
+            "label": "Verlopen",
+            "value": "verlopen"
+          }
+        ]
+      },
+      "type": "select",
+      "input": true,
+      "label": "Status",
+      "widget": "choicesjs",
+      "validate": {
+        "required": true
+      },
+      "tableView": true,
+      "attributes": {
+        "data-testid": "open-product-showcase-start-productStatus"
+      },
+      "properties": {
+        "targetKey": "pv:productStatus"
+      },
+      "defaultValue": "actief"
+    },
+    {
+      "key": "productFrequentie",
+      "data": {
+        "values": [
+          {
+            "label": "Eenmalig",
+            "value": "eenmalig"
+          },
+          {
+            "label": "Maandelijks",
+            "value": "maandelijks"
+          },
+          {
+            "label": "Jaarlijks",
+            "value": "jaarlijks"
+          }
+        ]
+      },
+      "type": "select",
+      "input": true,
+      "label": "Betalingsfrequentie",
+      "widget": "choicesjs",
+      "validate": {
+        "required": true
+      },
+      "tableView": true,
+      "attributes": {
+        "data-testid": "open-product-showcase-start-productFrequentie"
+      },
+      "properties": {
+        "targetKey": "pv:productFrequentie"
+      },
+      "defaultValue": "jaarlijks"
+    },
+    {
+      "key": "gepubliceerd",
+      "type": "checkbox",
+      "input": true,
+      "label": "Gepubliceerd (zichtbaar voor publiek)",
+      "tableView": false,
+      "attributes": {
+        "data-testid": "open-product-showcase-start-gepubliceerd"
+      },
+      "properties": {
+        "targetKey": "pv:gepubliceerd"
+      },
+      "defaultValue": true
+    },
+    {
+      "key": "aanvraagZaakUrn",
+      "type": "textfield",
+      "input": true,
+      "label": "Aanvraag zaak URN (optioneel)",
+      "tableView": false,
+      "attributes": {
+        "data-testid": "open-product-showcase-start-aanvraagZaakUrn"
+      },
+      "properties": {
+        "targetKey": "pv:aanvraagZaakUrn"
+      },
+      "applyMaskOn": "change",
+      "defaultValue": "urn:nld:maykin:openzaak:zrc:zaak:uuid:d42613cd-ee22-4455-808c-c19c7b8442a1"
+    },
+    {
+      "key": "aanvraagZaakUrl",
+      "type": "textfield",
+      "input": true,
+      "label": "Aanvraag zaak URL (optioneel)",
+      "tableView": false,
+      "attributes": {
+        "data-testid": "open-product-showcase-start-aanvraagZaakUrl"
+      },
+      "properties": {
+        "targetKey": "pv:aanvraagZaakUrl"
+      },
+      "applyMaskOn": "change",
+      "defaultValue": "https://maykin.zrc.com/api/v1/zaken/d42613cd-ee22-4455-808c-c19c7b8442a1"
+    },
+    {
+      "key": "productDataobject",
+      "type": "container",
+      "input": true,
+      "label": "Parkeervergunning gegevens (initieel)",
+      "tableView": false,
+      "attributes": {
+        "data-testid": "open-product-showcase-start-productDataobject"
+      },
+      "components": [
         {
-            "key": "html",
-            "type": "htmlelement",
-            "input": false,
-            "label": "Instructies",
-            "content": "<p>Start een nieuwe <strong>Parkeervergunning</strong>. Vul het kenteken en de parkeerzone in. Het producttype is vooraf ingesteld op de definitie van de parkeervergunning.</p>",
-            "tableView": false,
-            "refreshOnChange": false
-        },
-        {
-            "key": "productNaam",
-            "type": "textfield",
-            "input": true,
-            "label": "Naam van het product",
-            "tableView": true,
-            "defaultValue": "Parkeervergunning",
-            "validate": { "required": true },
-            "applyMaskOn": "change"
-        },
-        {
-            "key": "productTypeUuid",
-            "type": "hidden",
-            "input": true,
-            "label": "UUID van het producttype",
-            "tableView": false,
-            "defaultValue": "9903945d-b639-49da-85ed-7305817f47ad"
-        },
-        {
-            "key": "eigenaarBsn",
-            "type": "textfield",
-            "input": true,
-            "label": "BSN van de aanvrager",
-            "tableView": true,
-            "validate": { "required": true },
-            "applyMaskOn": "change"
-        },
-        {
-            "key": "productPrijs",
-            "type": "textfield",
-            "input": true,
-            "label": "Prijs (bijv. 35.00)",
-            "tableView": true,
-            "defaultValue": "35.00",
-            "validate": { "required": true },
-            "applyMaskOn": "change"
-        },
-        {
-            "key": "productStatus",
-            "type": "select",
-            "input": true,
-            "label": "Status",
-            "tableView": true,
-            "defaultValue": "actief",
-            "validate": { "required": true },
-            "data": {
-                "values": [
-                    { "label": "Actief", "value": "actief" },
-                    { "label": "Verlopen", "value": "verlopen" }
-                ]
-            }
-        },
-        {
-            "key": "productFrequentie",
-            "type": "select",
-            "input": true,
-            "label": "Betalingsfrequentie",
-            "tableView": true,
-            "defaultValue": "jaarlijks",
-            "validate": { "required": true },
-            "data": {
-                "values": [
-                    { "label": "Eenmalig", "value": "eenmalig" },
-                    { "label": "Maandelijks", "value": "maandelijks" },
-                    { "label": "Jaarlijks", "value": "jaarlijks" }
-                ]
-            }
-        },
-        {
-            "key": "gepubliceerd",
-            "type": "checkbox",
-            "input": true,
-            "label": "Gepubliceerd (zichtbaar voor publiek)",
-            "tableView": false,
-            "defaultValue": true
-        },
-        {
-            "key": "aanvraagZaakUrn",
-            "type": "textfield",
-            "input": true,
-            "label": "Aanvraag zaak URN (optioneel)",
-            "tableView": false,
-            "applyMaskOn": "change"
-        },
-        {
-            "key": "aanvraagZaakUrl",
-            "type": "textfield",
-            "input": true,
-            "label": "Aanvraag zaak URL (optioneel)",
-            "tableView": false,
-            "applyMaskOn": "change"
-        },
-        {
-            "key": "productDataobject",
-            "type": "container",
-            "input": true,
-            "label": "Parkeervergunning gegevens (initieel)",
-            "tableView": false,
-            "components": [
-                {
-                    "key": "kenteken",
-                    "type": "textfield",
-                    "input": true,
-                    "label": "Kenteken",
-                    "tableView": true,
-                    "validate": { "required": true },
-                    "applyMaskOn": "change"
-                }
-            ]
-        },
-        {
-            "key": "bijgewerktDataobject",
-            "type": "container",
-            "input": true,
-            "label": "Parkeervergunning gegevens (na wijziging)",
-            "tableView": false,
-            "components": [
-                {
-                    "key": "kenteken",
-                    "type": "textfield",
-                    "input": true,
-                    "label": "Kenteken (bijgewerkt)",
-                    "tableView": true,
-                    "applyMaskOn": "change"
-                }
-            ]
-        },
-        {
-            "key": "submit",
-            "type": "button",
-            "input": true,
-            "label": "Parkeervergunning aanvragen",
-            "tableView": false,
-            "disableOnInvalid": true
+          "key": "kenteken",
+          "type": "textfield",
+          "input": true,
+          "label": "Kenteken",
+          "validate": {
+            "required": true
+          },
+          "tableView": true,
+          "attributes": {
+            "data-testid": "open-product-showcase-start-kenteken"
+          },
+          "applyMaskOn": "change"
         }
-    ]
+      ],
+      "properties": {
+        "targetKey": "pv:productDataobject"
+      }
+    },
+    {
+      "key": "submit",
+      "type": "button",
+      "input": true,
+      "label": "Parkeervergunning aanvragen",
+      "tableView": false,
+      "disableOnInvalid": true
+    }
+  ]
 }

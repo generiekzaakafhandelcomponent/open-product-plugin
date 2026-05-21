@@ -16,6 +16,7 @@
 
 val jacksonModuleKotlinVersion: String by project
 val tokenAuthenticationVersion: String by project
+val kotlinLoggingVersion: String by project
 
 dockerCompose {
     setProjectName("open-product")
@@ -37,6 +38,8 @@ dependencies {
 
     compileOnly("org.springframework.boot:spring-boot-starter-web")
     compileOnly("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonModuleKotlinVersion")
+
+    compileOnly("io.github.oshai:kotlin-logging:$kotlinLoggingVersion")
 
     tasks.jar {
         enabled = true

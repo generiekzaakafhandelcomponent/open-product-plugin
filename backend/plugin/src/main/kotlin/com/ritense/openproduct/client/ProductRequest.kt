@@ -3,6 +3,7 @@ package com.ritense.openproduct.client
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.io.Serializable
 import java.time.LocalDate
 import java.util.UUID
 
@@ -97,7 +98,7 @@ data class Product(
 data class ProductType(
     @JsonProperty("uuid")
     val uuid: UUID,
-)
+): Serializable
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Eigenaar(
@@ -111,9 +112,9 @@ data class Eigenaar(
     val vestigingsnummer: String?,
     @JsonProperty("klantnummer")
     val klantnummer: String?,
-)
+): Serializable
 
 data class Document(
     @JsonProperty("url")
     val url: String,
-)
+): Serializable

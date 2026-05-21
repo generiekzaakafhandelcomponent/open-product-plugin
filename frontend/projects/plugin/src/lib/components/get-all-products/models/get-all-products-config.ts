@@ -1,5 +1,6 @@
 interface GetAllProductsConfig {
-    test: string;
+    producttypeUuid?: string;
+    resultaatVariabelNaam?: string;
 }
 
 export {GetAllProductsConfig};
