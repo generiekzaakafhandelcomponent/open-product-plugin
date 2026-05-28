@@ -6,10 +6,19 @@
     } as obs"
 >
     <v-input
-            name="test"
-            [title]="'test' | pluginTranslate: pluginId | async"
+            name="producttypeUuid"
+            [title]="'producttypeUuid' | pluginTranslate: pluginId | async"
             [margin]="true"
-            [defaultValue]="obs.prefill?.test"
+            [defaultValue]="obs.prefill?.producttypeUuid"
+            [disabled]="obs.disabled"
+            [required]="false"
+    >
+    </v-input>
+    <v-input
+            name="resultaatVariabelNaam"
+            [title]="'resultaatVariabelNaam' | pluginTranslate: pluginId | async"
+            [margin]="true"
+            [defaultValue]="obs.prefill?.resultaatVariabelNaam"
             [disabled]="obs.disabled"
             [required]="false"
     >

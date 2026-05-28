@@ -9,6 +9,7 @@ interface UpdateProductConfig {
     productPrijs: string;
     productFrequentie: string;
     productStatus: string;
+    dataobjectVariabelNaam?: string;
 }
 
 export {UpdateProductConfig};

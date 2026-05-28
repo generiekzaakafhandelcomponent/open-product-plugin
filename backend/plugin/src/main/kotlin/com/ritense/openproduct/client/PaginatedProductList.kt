@@ -2,6 +2,7 @@ package com.ritense.openproduct.client
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.io.Serializable
 import java.time.LocalDate
 import java.util.UUID
 
@@ -14,7 +15,7 @@ data class PaginatedProductList(
     val vorige: String?,
     @JsonProperty("results")
     val resultaten: List<ProductResponse> = emptyList(),
-)
+): Serializable
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class ProductResponse(
@@ -40,4 +41,4 @@ data class ProductResponse(
     val status: StatusEnum,
     @JsonProperty("prijs")
     val prijs: String,
-)
+): Serializable

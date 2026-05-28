@@ -34,19 +34,26 @@ class OpenProductClient {
     fun getAllProducts(
         baseUrl: String,
         authenticationPlugin: TokenAuthenticationPlugin,
+        producttypeUuid: String? = null,
     ): List<ProductResponse>? {
         val restClient = getRestclient(baseUrl, authenticationPlugin)
+
+        val uri = if (producttypeUuid != null) {
+            "/producten/api/v1/producten?producttype__uuid=$producttypeUuid"
+        } else {
+            "/producten/api/v1/producten"
+        }
 
         val response =
             restClient
                 .get()
-                .uri("/producten/api/v1/producten")
+                .uri(uri)
                 .retrieve()
                 .toEntity(PaginatedProductList::class.java)
 
         val result =
             response.body
-                ?: throw IllegalStateException("Failed to get product")
+                ?: throw IllegalStateException("Failed to get products")
 
         return result.resultaten
     }
@@ -55,7 +62,7 @@ class OpenProductClient {
         baseUrl: String,
         authenticationPlugin: TokenAuthenticationPlugin,
         request: ProductRequest,
-    ): String? {
+    ): Product? {
         val restClient = getRestclient(baseUrl, authenticationPlugin)
         val objectMapper = jacksonObjectMapper()
         val requestJson = objectMapper.writeValueAsString(request)
@@ -69,7 +76,7 @@ class OpenProductClient {
                 .retrieve()
 
         val result =
-            response.toEntity(String::class.java)
+            response.toEntity(Product::class.java)
                 ?: throw IllegalStateException("Failed to create product")
 
         return result.body

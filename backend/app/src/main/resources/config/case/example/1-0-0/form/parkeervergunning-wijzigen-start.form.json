@@ -1,0 +1,37 @@
+{
+  "display": "form",
+  "components": [
+    {
+      "key": "html",
+      "type": "htmlelement",
+      "input": false,
+      "label": "Instructies",
+      "content": "<p>Start het wijzigingsproces voor een bestaande <strong>Parkeervergunning</strong>. In de volgende stap worden alle beschikbare parkeervergunningen opgehaald en kun je de te wijzigen vergunning selecteren.</p>",
+      "tableView": false,
+      "refreshOnChange": false
+    },
+    {
+      "key": "eigenaarBsn",
+      "type": "textfield",
+      "input": true,
+      "label": "BSN van de eigenaar",
+      "validate": { "required": true },
+      "tableView": true,
+      "attributes": {
+        "data-testid": "parkeervergunning-wijzigen-start-eigenaarBsn"
+      },
+      "properties": {
+        "targetKey": "pv:eigenaarBsn"
+      },
+      "applyMaskOn": "change"
+    },
+    {
+      "key": "submit",
+      "type": "button",
+      "input": true,
+      "label": "Wijziging starten",
+      "tableView": false,
+      "disableOnInvalid": true
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_showcase" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.35.0">
+  <bpmn:collaboration id="Collaboration_showcase">
+    <bpmn:participant id="showcase-participant" name="Open Product Showcase" processRef="open-product-showcase" />
+  </bpmn:collaboration>
+  <bpmn:process id="open-product-showcase" name="Parkeervergunning aanmaken" isExecutable="true">
+    <bpmn:startEvent id="showcase-start-event" name="Proces gestart">
+      <bpmn:outgoing>Flow_showcase_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="openproduct-create-product" name="Maak product aan">
+      <bpmn:incoming>Flow_showcase_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_showcase_2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="openproduct-update-product" name="Wijzig product">
+      <bpmn:incoming>Flow_showcase_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_showcase_3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="showcase-end-event" name="Proces beeindigd">
+      <bpmn:incoming>Flow_showcase_3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_showcase_1" sourceRef="showcase-start-event" targetRef="openproduct-create-product" />
+    <bpmn:sequenceFlow id="Flow_showcase_2" sourceRef="openproduct-create-product" targetRef="openproduct-update-product" />
+    <bpmn:sequenceFlow id="Flow_showcase_3" sourceRef="openproduct-update-product" targetRef="showcase-end-event" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_showcase">
+    <bpmndi:BPMNPlane id="BPMNPlane_showcase" bpmnElement="Collaboration_showcase">
+      <bpmndi:BPMNShape id="Participant_showcase_di" bpmnElement="showcase-participant" isHorizontal="true">
+        <dc:Bounds x="160" y="100" width="750" height="200" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_showcase_di" bpmnElement="showcase-start-event">
+        <dc:Bounds x="232" y="182" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="210" y="225" width="80" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_create_di" bpmnElement="openproduct-create-product">
+        <dc:Bounds x="340" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_update_di" bpmnElement="openproduct-update-product">
+        <dc:Bounds x="520" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_showcase_di" bpmnElement="showcase-end-event">
+        <dc:Bounds x="712" y="182" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="688" y="225" width="85" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_showcase_1_di" bpmnElement="Flow_showcase_1">
+        <di:waypoint x="268" y="200" />
+        <di:waypoint x="340" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_showcase_2_di" bpmnElement="Flow_showcase_2">
+        <di:waypoint x="440" y="200" />
+        <di:waypoint x="520" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_showcase_3_di" bpmnElement="Flow_showcase_3">
+        <di:waypoint x="620" y="200" />
+        <di:waypoint x="712" y="200" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

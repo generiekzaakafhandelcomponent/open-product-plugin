@@ -1,0 +1,7 @@
+[
+    {
+        "processDefinitionKey": "parkeervergunning-wijzigen",
+        "canInitializeDocument": true,
+        "startableByUser": true
+    }
+]
