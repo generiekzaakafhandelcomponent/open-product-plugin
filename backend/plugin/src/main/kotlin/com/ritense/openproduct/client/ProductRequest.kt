@@ -98,7 +98,7 @@ data class Product(
 data class ProductType(
     @JsonProperty("uuid")
     val uuid: UUID,
-): Serializable
+) : Serializable
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class Eigenaar(
@@ -112,9 +112,9 @@ data class Eigenaar(
     val vestigingsnummer: String?,
     @JsonProperty("klantnummer")
     val klantnummer: String?,
-): Serializable
+) : Serializable
 
 data class Document(
     @JsonProperty("url")
     val url: String,
-): Serializable
+) : Serializable
