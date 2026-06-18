@@ -38,11 +38,12 @@ class OpenProductClient {
     ): List<ProductResponse>? {
         val restClient = getRestclient(baseUrl, authenticationPlugin)
 
-        val uri = if (producttypeUuid != null) {
-            "/producten/api/v1/producten?producttype__uuid=$producttypeUuid"
-        } else {
-            "/producten/api/v1/producten"
-        }
+        val uri =
+            if (producttypeUuid != null) {
+                "/producten/api/v1/producten?producttype__uuid=$producttypeUuid"
+            } else {
+                "/producten/api/v1/producten"
+            }
 
         val response =
             restClient

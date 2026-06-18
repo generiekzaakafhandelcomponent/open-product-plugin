@@ -118,13 +118,15 @@ class OpenProductPlugin(
         val freqEnum = toFreqEnum(productFrequentie)
         val statusEnum = toStatusEnum(productStatus)
 
-        val dataobjectMap = dataobjectVariabelNaam
-            ?.let {
-                val raw = execution.getVariable(it)
-                if (raw != null && raw !is Map<*, *>) {
-                    logger.warn("Expected Map for dataobject variable '$it' but got ${raw.javaClass}")
+        val dataobjectMap =
+            dataobjectVariabelNaam
+                ?.let {
+                    val raw = execution.getVariable(it)
+                    if (raw != null && raw !is Map<*, *>) {
+                        logger.warn("Expected Map for dataobject variable '$it' but got ${raw.javaClass}")
+                    }
+                    raw as? Map<String, Any>
                 }
-                raw as? Map<String, Any> }
 
         val resultaat =
             openProductClient.createProduct(
@@ -175,14 +177,15 @@ class OpenProductPlugin(
         val freqEnum = toFreqEnum(productFrequentie)
         val statusEnum = toStatusEnum(productStatus)
 
-        val dataobjectMap = dataobjectVariabelNaam
-            ?.let {
-                val raw = execution.getVariable(it)
-                if (raw != null && raw !is Map<*, *>) {
-                    logger.warn("Expected Map for dataobject variable '$it' but got ${raw.javaClass}")
+        val dataobjectMap =
+            dataobjectVariabelNaam
+                ?.let {
+                    val raw = execution.getVariable(it)
+                    if (raw != null && raw !is Map<*, *>) {
+                        logger.warn("Expected Map for dataobject variable '$it' but got ${raw.javaClass}")
+                    }
+                    raw as? Map<String, Any>
                 }
-                raw as? Map<String, Any>
-            }
 
         val resultaat =
             openProductClient.updateProduct(

@@ -15,7 +15,7 @@ data class PaginatedProductList(
     val vorige: String?,
     @JsonProperty("results")
     val resultaten: List<ProductResponse> = emptyList(),
-): Serializable
+) : Serializable
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class ProductResponse(
@@ -41,4 +41,4 @@ data class ProductResponse(
     val status: StatusEnum,
     @JsonProperty("prijs")
     val prijs: String,
-): Serializable
+) : Serializable

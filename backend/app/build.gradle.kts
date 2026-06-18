@@ -2,12 +2,14 @@ val kotlinLoggingVersion: String by project
 val nettyResolverDnsNativeMacOsVersion: String by project
 val tokenAuthenticationVersion: String by project
 
-dependencies {
-    implementation(platform("com.ritense.valtimo:valtimo-dependency-versions"))
+val valtimoVersion: String by project
 
-    implementation("com.ritense.valtimo:valtimo-dependencies")
-    implementation("com.ritense.valtimo:valtimo-gzac-dependencies")
-    implementation("com.ritense.valtimo:local-mail")
+dependencies {
+    implementation(platform("com.ritense.valtimo:valtimo-dependency-versions:$valtimoVersion"))
+
+    implementation("com.ritense.valtimo:valtimo-dependencies:$valtimoVersion")
+    implementation("com.ritense.valtimo:valtimo-gzac-dependencies:$valtimoVersion")
+    implementation("com.ritense.valtimo:local-mail:$valtimoVersion")
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.postgresql:postgresql")
@@ -31,14 +33,14 @@ val configureEnvironment = extra["configureEnvironment"] as (task: ProcessForkOp
 dockerCompose {
     setProjectName("open-product-plugin")
     composeAdditionalArgs.addAll("--profile", "zgw")
-  //  composeAdditionalArgs = ["--profile", "zgw", "--profile", "openformulieren", "--profile", "openklant"]
+    //  composeAdditionalArgs = ["--profile", "zgw", "--profile", "openformulieren", "--profile", "openklant"]
     stopContainers = false
     removeContainers = false
     removeVolumes = false
 }
 
 tasks.bootRun {
-  //  dependsOn("composeUp")
+    //  dependsOn("composeUp")
     systemProperty("spring.profiles.include", "dev")
     val t = this
     doFirst {
