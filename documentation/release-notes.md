@@ -2,6 +2,9 @@
 
 Overzicht van wijzigingen per versie van de Open Product-plugin.
 
+## 1.2.0
+Versies van backend en frontend gelijkgetrokken.
+
 ## 1.1.0
 Mogelijkheid toegevoegd om een data-object mee te geven, en de aanvraagzaak-url en -urn zijn nu verplicht.
 
