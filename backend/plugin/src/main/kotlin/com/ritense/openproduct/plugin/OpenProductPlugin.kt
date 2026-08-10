@@ -16,6 +16,7 @@
 
 package com.ritense.openproduct.plugin
 
+import com.ritense.openproduct.client.DocumentRequest
 import com.ritense.openproduct.client.EigenaarRequest
 import com.ritense.openproduct.client.FrequentieEnum
 import com.ritense.openproduct.client.OpenProductClient
@@ -31,6 +32,7 @@ import com.ritense.tokenauthentication.plugin.TokenAuthenticationPlugin
 import com.ritense.valueresolver.ValueResolverService
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.operaton.bpm.engine.delegate.DelegateExecution
+import java.util.UUID
 
 @Plugin(
     key = "openproduct",
@@ -114,6 +116,7 @@ class OpenProductPlugin(
         @PluginActionProperty productFrequentie: String,
         @PluginActionProperty gepubliceerd: java.lang.Boolean?,
         @PluginActionProperty dataobjectVariabelNaam: String?,
+        @PluginActionProperty documentenVariabelNaam: String?,
     ) {
         val freqEnum = toFreqEnum(productFrequentie)
         val statusEnum = toStatusEnum(productStatus)
@@ -126,6 +129,16 @@ class OpenProductPlugin(
                         logger.warn("Expected Map for dataobject variable '$it' but got ${raw.javaClass}")
                     }
                     raw as? Map<String, Any>
+                }
+
+        val documentenList =
+            documentenVariabelNaam
+                ?.let {
+                    val raw = execution.getVariable(it)
+                    if (raw != null && raw !is List<*>) {
+                        logger.warn("Expected List for documenten variable '$it' but got ${raw.javaClass}")
+                    }
+                    (raw as? List<*>)?.mapNotNull { entry -> toDocumentRequest(entry) }
                 }
 
         val resultaat =
@@ -148,6 +161,7 @@ class OpenProductPlugin(
                     frequentie = freqEnum,
                     status = statusEnum,
                     dataobject = dataobjectMap,
+                    documenten = documentenList,
                 ),
             )
         execution.setVariable("aangemaaktProductUuid", resultaat?.uuid?.toString())
@@ -173,6 +187,7 @@ class OpenProductPlugin(
         @PluginActionProperty productFrequentie: String,
         @PluginActionProperty productStatus: String,
         @PluginActionProperty dataobjectVariabelNaam: String?,
+        @PluginActionProperty documentenVariabelNaam: String?,
     ) {
         val freqEnum = toFreqEnum(productFrequentie)
         val statusEnum = toStatusEnum(productStatus)
@@ -185,6 +200,16 @@ class OpenProductPlugin(
                         logger.warn("Expected Map for dataobject variable '$it' but got ${raw.javaClass}")
                     }
                     raw as? Map<String, Any>
+                }
+
+        val documentenList =
+            documentenVariabelNaam
+                ?.let {
+                    val raw = execution.getVariable(it)
+                    if (raw != null && raw !is List<*>) {
+                        logger.warn("Expected List for documenten variable '$it' but got ${raw.javaClass}")
+                    }
+                    (raw as? List<*>)?.mapNotNull { entry -> toDocumentRequest(entry) }
                 }
 
         val resultaat =
@@ -208,6 +233,7 @@ class OpenProductPlugin(
                     frequentie = freqEnum,
                     status = statusEnum,
                     dataobject = dataobjectMap,
+                    documenten = documentenList,
                 ),
             )
 
@@ -252,6 +278,11 @@ class OpenProductPlugin(
             "verlopen" -> StatusEnum.VERLOPEN
             else -> throw IllegalArgumentException("Ongeldige status: $status")
         }
+
+    private fun toDocumentRequest(entry: Any?): DocumentRequest? {
+        val fileId = (entry as? Map<*, *>)?.get("fileId")?.toString() ?: return null
+        return DocumentRequest(uuid = UUID.fromString(fileId))
+    }
 
     companion object {
         private val logger = KotlinLogging.logger {}
