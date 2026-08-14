@@ -34,6 +34,7 @@ dependencies {
     compileOnly("com.ritense.valtimo:plugin-valtimo")
     compileOnly("com.ritense.valtimo:process-document")
     compileOnly("com.ritense.valtimo:value-resolver")
+    compileOnly("com.ritense.valtimo:zaken-api")
     compileOnly("com.ritense.valtimoplugins:token-authentication:$tokenAuthenticationVersion")
 
     compileOnly("org.springframework.boot:spring-boot-starter-web")

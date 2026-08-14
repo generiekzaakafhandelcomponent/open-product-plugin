@@ -30,8 +30,10 @@ import com.ritense.plugin.service.PluginService
 import com.ritense.processlink.domain.ActivityTypeWithEventName
 import com.ritense.tokenauthentication.plugin.TokenAuthenticationPlugin
 import com.ritense.valueresolver.ValueResolverService
+import com.ritense.zakenapi.ZakenApiPlugin
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.operaton.bpm.engine.delegate.DelegateExecution
+import java.net.URI
 import java.util.UUID
 
 @Plugin(
@@ -40,7 +42,7 @@ import java.util.UUID
     description = "Plugin for interacting with the Open Product API",
 )
 class OpenProductPlugin(
-    pluginService: PluginService,
+    private val pluginService: PluginService,
     private val openProductClient: OpenProductClient,
     private val valueResolverService: ValueResolverService,
 ) {
@@ -116,7 +118,7 @@ class OpenProductPlugin(
         @PluginActionProperty productFrequentie: String,
         @PluginActionProperty gepubliceerd: java.lang.Boolean?,
         @PluginActionProperty dataobjectVariabelNaam: String?,
-        @PluginActionProperty documentenVariabelNaam: String?,
+        @PluginActionProperty koppelZaakDocumenten: java.lang.Boolean?,
     ) {
         val freqEnum = toFreqEnum(productFrequentie)
         val statusEnum = toStatusEnum(productStatus)
@@ -132,14 +134,11 @@ class OpenProductPlugin(
                 }
 
         val documentenList =
-            documentenVariabelNaam
-                ?.let {
-                    val raw = execution.getVariable(it)
-                    if (raw != null && raw !is List<*>) {
-                        logger.warn("Expected List for documenten variable '$it' but got ${raw.javaClass}")
-                    }
-                    (raw as? List<*>)?.mapNotNull { entry -> toDocumentRequest(entry) }
-                }
+            if (koppelZaakDocumenten == true) {
+                fetchZaakDocumentUrls(execution, aanvraagZaakUrl)
+            } else {
+                null
+            }
 
         val resultaat =
             openProductClient.createProduct(
@@ -187,7 +186,7 @@ class OpenProductPlugin(
         @PluginActionProperty productFrequentie: String,
         @PluginActionProperty productStatus: String,
         @PluginActionProperty dataobjectVariabelNaam: String?,
-        @PluginActionProperty documentenVariabelNaam: String?,
+        @PluginActionProperty koppelZaakDocumenten: java.lang.Boolean?,
     ) {
         val freqEnum = toFreqEnum(productFrequentie)
         val statusEnum = toStatusEnum(productStatus)
@@ -203,14 +202,11 @@ class OpenProductPlugin(
                 }
 
         val documentenList =
-            documentenVariabelNaam
-                ?.let {
-                    val raw = execution.getVariable(it)
-                    if (raw != null && raw !is List<*>) {
-                        logger.warn("Expected List for documenten variable '$it' but got ${raw.javaClass}")
-                    }
-                    (raw as? List<*>)?.mapNotNull { entry -> toDocumentRequest(entry) }
-                }
+            if (koppelZaakDocumenten == true && aanvraagZaakUrl != null) {
+                fetchZaakDocumentUrls(execution, aanvraagZaakUrl)
+            } else {
+                null
+            }
 
         val resultaat =
             openProductClient.updateProduct(
@@ -279,9 +275,15 @@ class OpenProductPlugin(
             else -> throw IllegalArgumentException("Ongeldige status: $status")
         }
 
-    private fun toDocumentRequest(entry: Any?): DocumentRequest? {
-        val fileId = (entry as? Map<*, *>)?.get("fileId")?.toString() ?: return null
-        return DocumentRequest(uuid = UUID.fromString(fileId))
+    private fun fetchZaakDocumentUrls(execution: DelegateExecution, zaakUrl: String): List<DocumentRequest> {
+        val zaakUri = URI(zaakUrl)
+        val zakenApiPlugin = checkNotNull(
+            pluginService.createInstance(ZakenApiPlugin::class.java, ZakenApiPlugin.findConfigurationByUrl(zaakUri))
+        ) { "Could not find ZakenApiPlugin configuration for zaak with url: $zaakUri" }
+
+        val documentId = UUID.fromString(execution.businessKey)
+        return zakenApiPlugin.getZaakInformatieObjecten(documentId, zaakUri)
+            .map { DocumentRequest(url = it.informatieobject.toString()) }
     }
 
     companion object {

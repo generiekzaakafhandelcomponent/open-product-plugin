@@ -56,8 +56,8 @@ data class EigenaarRequest(
 )
 
 data class DocumentRequest(
-    @JsonProperty("uuid")
-    val uuid: UUID,
+    @JsonProperty("url")
+    val url: String,
 )
 
 data class Product(
