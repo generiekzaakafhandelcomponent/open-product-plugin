@@ -36,6 +36,7 @@ class OpenProductClient {
         authenticationPlugin: TokenAuthenticationPlugin,
         producttypeUuid: String? = null,
         eigenaarBsn: String? = null,
+        status: String? = null,
     ): List<ProductResponse>? {
         val restClient = getRestclient(baseUrl, authenticationPlugin)
 
@@ -43,6 +44,7 @@ class OpenProductClient {
             listOfNotNull(
                 producttypeUuid?.let { "producttype__uuid=$it" },
                 eigenaarBsn?.let { "eigenaren__bsn=$it" },
+                status?.let { "status=$it" },
             )
         val uri =
             if (queryParams.isNotEmpty()) {

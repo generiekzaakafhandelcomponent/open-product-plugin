@@ -82,6 +82,7 @@ class OpenProductPlugin(
         execution: DelegateExecution,
         @PluginActionProperty producttypeUuid: String?,
         @PluginActionProperty eigenaarBsn: String?,
+        @PluginActionProperty status: String?,
         @PluginActionProperty resultaatVariabelNaam: String?,
     ) {
         val result =
@@ -90,6 +91,7 @@ class OpenProductPlugin(
                 authenticationPluginConfiguration,
                 producttypeUuid,
                 eigenaarBsn,
+                status,
             )
 
         val variabelNaam = resultaatVariabelNaam ?: "alleProducten"
