@@ -125,15 +125,7 @@ class OpenProductPlugin(
         val freqEnum = toFreqEnum(productFrequentie)
         val statusEnum = toStatusEnum(productStatus)
 
-        val dataobjectMap =
-            dataobjectVariabelNaam
-                ?.let {
-                    val raw = execution.getVariable(it)
-                    if (raw != null && raw !is Map<*, *>) {
-                        logger.warn("Expected Map for dataobject variable '$it' but got ${raw.javaClass}")
-                    }
-                    raw as? Map<String, Any>
-                }
+        val dataobjectMap = resolveDataobjectMap(execution, dataobjectVariabelNaam)
 
         val documentenList =
             if (koppelZaakDocumenten == true) {
@@ -193,15 +185,7 @@ class OpenProductPlugin(
         val freqEnum = toFreqEnum(productFrequentie)
         val statusEnum = toStatusEnum(productStatus)
 
-        val dataobjectMap =
-            dataobjectVariabelNaam
-                ?.let {
-                    val raw = execution.getVariable(it)
-                    if (raw != null && raw !is Map<*, *>) {
-                        logger.warn("Expected Map for dataobject variable '$it' but got ${raw.javaClass}")
-                    }
-                    raw as? Map<String, Any>
-                }
+        val dataobjectMap = resolveDataobjectMap(execution, dataobjectVariabelNaam)
 
         val documentenList =
             if (koppelZaakDocumenten == true && aanvraagZaakUrl != null) {
@@ -287,6 +271,16 @@ class OpenProductPlugin(
         return zakenApiPlugin.getZaakInformatieObjecten(documentId, zaakUri)
             .map { DocumentRequest(url = it.informatieobject.toString()) }
     }
+
+    private fun resolveDataobjectMap(execution: DelegateExecution, variableName: String?): Map<String, Any>? =
+        variableName?.let {
+            val raw = execution.getVariable(it)
+            if (raw != null && raw !is Map<*, *>) {
+                logger.warn { "Expected Map for dataobject variable '$it' but got ${raw.javaClass}" }
+            }
+            @Suppress("UNCHECKED_CAST")
+            raw as? Map<String, Any>
+        }
 
     companion object {
         private val logger = KotlinLogging.logger {}
