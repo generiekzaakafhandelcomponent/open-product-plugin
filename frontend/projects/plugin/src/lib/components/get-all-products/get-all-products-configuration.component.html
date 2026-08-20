@@ -15,6 +15,24 @@
     >
     </v-input>
     <v-input
+            name="eigenaarBsn"
+            [title]="'eigenaarBsn' | pluginTranslate: pluginId | async"
+            [margin]="true"
+            [defaultValue]="obs.prefill?.eigenaarBsn"
+            [disabled]="obs.disabled"
+            [required]="false"
+    >
+    </v-input>
+    <v-input
+            name="status"
+            [title]="'status' | pluginTranslate: pluginId | async"
+            [margin]="true"
+            [defaultValue]="obs.prefill?.status"
+            [disabled]="obs.disabled"
+            [required]="false"
+    >
+    </v-input>
+    <v-input
             name="resultaatVariabelNaam"
             [title]="'resultaatVariabelNaam' | pluginTranslate: pluginId | async"
             [margin]="true"

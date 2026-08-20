@@ -61,6 +61,7 @@ class OpenProductPlugin(
     fun getProduct(
         execution: DelegateExecution,
         @PluginActionProperty productUuid: String,
+        @PluginActionProperty dataobjectVariabelNaam: String?,
     ) {
         val result =
             openProductClient.getProduct(
@@ -69,7 +70,26 @@ class OpenProductPlugin(
                 productUuid,
             )
 
+        dataobjectVariabelNaam?.let {
+            execution.setVariable(it, LinkedHashMap(result?.dataobject ?: emptyMap()))
+        }
         execution.setVariable("resultaatPV", "Product: $result")
+    }
+
+    @PluginAction(
+        key = "get-zaak-documenten",
+        title = "Zaakinformatieobjecten ophalen als productdocumenten",
+        description = "Retrieve informatieobjecten linked to the zaak, formatted for product 'documenten'",
+        activityTypes = [ActivityTypeWithEventName.SERVICE_TASK_START],
+    )
+    fun getZaakDocumenten(
+        execution: DelegateExecution,
+        @PluginActionProperty aanvraagZaakUrl: String,
+        @PluginActionProperty resultaatVariabelNaam: String?,
+    ) {
+        val documenten = fetchZaakDocumentUrls(execution, aanvraagZaakUrl).map { mapOf("url" to it.url) }
+        execution.setVariable(resultaatVariabelNaam ?: "zaakDocumenten", documenten)
+        execution.setVariable("resultaatPV", "Documenten opgehaald: ${documenten.size}")
     }
 
     @PluginAction(
@@ -183,6 +203,7 @@ class OpenProductPlugin(
         @PluginActionProperty productStatus: String,
         @PluginActionProperty dataobjectVariabelNaam: String?,
         @PluginActionProperty koppelZaakDocumenten: java.lang.Boolean?,
+        @PluginActionProperty documentenVariabelNaam: String?,
     ) {
         val freqEnum = toFreqEnum(productFrequentie)
         val statusEnum = toStatusEnum(productStatus)
@@ -190,10 +211,10 @@ class OpenProductPlugin(
         val dataobjectMap = resolveDataobjectMap(execution, dataobjectVariabelNaam)
 
         val documentenList =
-            if (koppelZaakDocumenten == true && aanvraagZaakUrl != null) {
-                fetchZaakDocumentUrls(execution, aanvraagZaakUrl)
-            } else {
-                null
+            when {
+                documentenVariabelNaam != null -> resolveDocumentenList(execution, documentenVariabelNaam)
+                koppelZaakDocumenten == true && aanvraagZaakUrl != null -> fetchZaakDocumentUrls(execution, aanvraagZaakUrl)
+                else -> null
             }
 
         val resultaat =
@@ -282,6 +303,18 @@ class OpenProductPlugin(
             }
             @Suppress("UNCHECKED_CAST")
             raw as? Map<String, Any>
+        }
+
+    private fun resolveDocumentenList(execution: DelegateExecution, variableName: String?): List<DocumentRequest>? =
+        variableName?.let {
+            val raw = execution.getVariable(it)
+            if (raw != null && raw !is List<*>) {
+                logger.warn { "Expected List for documenten variable '$it' but got ${raw.javaClass}" }
+            }
+            @Suppress("UNCHECKED_CAST")
+            (raw as? List<Map<String, Any>>)?.mapNotNull { entry ->
+                (entry["url"] as? String)?.let { url -> DocumentRequest(url = url) }
+            }
         }
 
     companion object {
