@@ -16,6 +16,7 @@
 
 package com.ritense.openproduct.plugin
 
+import com.ritense.openproduct.client.DocumentRequest
 import com.ritense.openproduct.client.EigenaarRequest
 import com.ritense.openproduct.client.FrequentieEnum
 import com.ritense.openproduct.client.OpenProductClient
@@ -29,8 +30,11 @@ import com.ritense.plugin.service.PluginService
 import com.ritense.processlink.domain.ActivityTypeWithEventName
 import com.ritense.tokenauthentication.plugin.TokenAuthenticationPlugin
 import com.ritense.valueresolver.ValueResolverService
+import com.ritense.zakenapi.ZakenApiPlugin
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.operaton.bpm.engine.delegate.DelegateExecution
+import java.net.URI
+import java.util.UUID
 
 @Plugin(
     key = "openproduct",
@@ -38,7 +42,7 @@ import org.operaton.bpm.engine.delegate.DelegateExecution
     description = "Plugin for interacting with the Open Product API",
 )
 class OpenProductPlugin(
-    pluginService: PluginService,
+    private val pluginService: PluginService,
     private val openProductClient: OpenProductClient,
     private val valueResolverService: ValueResolverService,
 ) {
@@ -57,6 +61,7 @@ class OpenProductPlugin(
     fun getProduct(
         execution: DelegateExecution,
         @PluginActionProperty productUuid: String,
+        @PluginActionProperty dataobjectVariabelNaam: String?,
     ) {
         val result =
             openProductClient.getProduct(
@@ -65,7 +70,26 @@ class OpenProductPlugin(
                 productUuid,
             )
 
+        dataobjectVariabelNaam?.let {
+            execution.setVariable(it, LinkedHashMap(result?.dataobject ?: emptyMap()))
+        }
         execution.setVariable("resultaatPV", "Product: $result")
+    }
+
+    @PluginAction(
+        key = "get-zaak-documenten",
+        title = "Zaakinformatieobjecten ophalen als productdocumenten",
+        description = "Retrieve informatieobjecten linked to the zaak, formatted for product 'documenten'",
+        activityTypes = [ActivityTypeWithEventName.SERVICE_TASK_START],
+    )
+    fun getZaakDocumenten(
+        execution: DelegateExecution,
+        @PluginActionProperty aanvraagZaakUrl: String,
+        @PluginActionProperty resultaatVariabelNaam: String?,
+    ) {
+        val documenten = fetchZaakDocumentUrls(execution, aanvraagZaakUrl).map { mapOf("url" to it.url) }
+        execution.setVariable(resultaatVariabelNaam ?: "zaakDocumenten", documenten)
+        execution.setVariable("resultaatPV", "Documenten opgehaald: ${documenten.size}")
     }
 
     @PluginAction(
@@ -77,6 +101,8 @@ class OpenProductPlugin(
     fun getAllProducts(
         execution: DelegateExecution,
         @PluginActionProperty producttypeUuid: String?,
+        @PluginActionProperty eigenaarBsn: String?,
+        @PluginActionProperty status: String?,
         @PluginActionProperty resultaatVariabelNaam: String?,
     ) {
         val result =
@@ -84,6 +110,8 @@ class OpenProductPlugin(
                 baseUrl,
                 authenticationPluginConfiguration,
                 producttypeUuid,
+                eigenaarBsn,
+                status,
             )
 
         val variabelNaam = resultaatVariabelNaam ?: "alleProducten"
@@ -114,19 +142,19 @@ class OpenProductPlugin(
         @PluginActionProperty productFrequentie: String,
         @PluginActionProperty gepubliceerd: java.lang.Boolean?,
         @PluginActionProperty dataobjectVariabelNaam: String?,
+        @PluginActionProperty koppelZaakDocumenten: java.lang.Boolean?,
     ) {
         val freqEnum = toFreqEnum(productFrequentie)
         val statusEnum = toStatusEnum(productStatus)
 
-        val dataobjectMap =
-            dataobjectVariabelNaam
-                ?.let {
-                    val raw = execution.getVariable(it)
-                    if (raw != null && raw !is Map<*, *>) {
-                        logger.warn("Expected Map for dataobject variable '$it' but got ${raw.javaClass}")
-                    }
-                    raw as? Map<String, Any>
-                }
+        val dataobjectMap = resolveDataobjectMap(execution, dataobjectVariabelNaam)
+
+        val documentenList =
+            if (koppelZaakDocumenten == true) {
+                fetchZaakDocumentUrls(execution, aanvraagZaakUrl)
+            } else {
+                null
+            }
 
         val resultaat =
             openProductClient.createProduct(
@@ -148,6 +176,7 @@ class OpenProductPlugin(
                     frequentie = freqEnum,
                     status = statusEnum,
                     dataobject = dataobjectMap,
+                    documenten = documentenList,
                 ),
             )
         execution.setVariable("aangemaaktProductUuid", resultaat?.uuid?.toString())
@@ -173,19 +202,20 @@ class OpenProductPlugin(
         @PluginActionProperty productFrequentie: String,
         @PluginActionProperty productStatus: String,
         @PluginActionProperty dataobjectVariabelNaam: String?,
+        @PluginActionProperty koppelZaakDocumenten: java.lang.Boolean?,
+        @PluginActionProperty documentenVariabelNaam: String?,
     ) {
         val freqEnum = toFreqEnum(productFrequentie)
         val statusEnum = toStatusEnum(productStatus)
 
-        val dataobjectMap =
-            dataobjectVariabelNaam
-                ?.let {
-                    val raw = execution.getVariable(it)
-                    if (raw != null && raw !is Map<*, *>) {
-                        logger.warn("Expected Map for dataobject variable '$it' but got ${raw.javaClass}")
-                    }
-                    raw as? Map<String, Any>
-                }
+        val dataobjectMap = resolveDataobjectMap(execution, dataobjectVariabelNaam)
+
+        val documentenList =
+            when {
+                documentenVariabelNaam != null -> resolveDocumentenList(execution, documentenVariabelNaam)
+                koppelZaakDocumenten == true && aanvraagZaakUrl != null -> fetchZaakDocumentUrls(execution, aanvraagZaakUrl)
+                else -> null
+            }
 
         val resultaat =
             openProductClient.updateProduct(
@@ -208,6 +238,7 @@ class OpenProductPlugin(
                     frequentie = freqEnum,
                     status = statusEnum,
                     dataobject = dataobjectMap,
+                    documenten = documentenList,
                 ),
             )
 
@@ -251,6 +282,39 @@ class OpenProductPlugin(
             "geweigerd" -> StatusEnum.GEWEIGERD
             "verlopen" -> StatusEnum.VERLOPEN
             else -> throw IllegalArgumentException("Ongeldige status: $status")
+        }
+
+    private fun fetchZaakDocumentUrls(execution: DelegateExecution, zaakUrl: String): List<DocumentRequest> {
+        val zaakUri = URI(zaakUrl)
+        val zakenApiPlugin = checkNotNull(
+            pluginService.createInstance(ZakenApiPlugin::class.java, ZakenApiPlugin.findConfigurationByUrl(zaakUri))
+        ) { "Could not find ZakenApiPlugin configuration for zaak with url: $zaakUri" }
+
+        val documentId = UUID.fromString(execution.businessKey)
+        return zakenApiPlugin.getZaakInformatieObjecten(documentId, zaakUri)
+            .map { DocumentRequest(url = it.informatieobject.toString()) }
+    }
+
+    private fun resolveDataobjectMap(execution: DelegateExecution, variableName: String?): Map<String, Any>? =
+        variableName?.let {
+            val raw = execution.getVariable(it)
+            if (raw != null && raw !is Map<*, *>) {
+                logger.warn { "Expected Map for dataobject variable '$it' but got ${raw.javaClass}" }
+            }
+            @Suppress("UNCHECKED_CAST")
+            raw as? Map<String, Any>
+        }
+
+    private fun resolveDocumentenList(execution: DelegateExecution, variableName: String?): List<DocumentRequest>? =
+        variableName?.let {
+            val raw = execution.getVariable(it)
+            if (raw != null && raw !is List<*>) {
+                logger.warn { "Expected List for documenten variable '$it' but got ${raw.javaClass}" }
+            }
+            @Suppress("UNCHECKED_CAST")
+            (raw as? List<Map<String, Any>>)?.mapNotNull { entry ->
+                (entry["url"] as? String)?.let { url -> DocumentRequest(url = url) }
+            }
         }
 
     companion object {

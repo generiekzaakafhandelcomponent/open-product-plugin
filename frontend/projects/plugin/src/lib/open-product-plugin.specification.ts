@@ -54,7 +54,7 @@ const openProductPluginSpecification: PluginSpecification = {
             "create-product": "Product aanmaken",
             "delete-product": "Product verwijderen via UUID",
             "update-product": "Product bijwerken via UUID",
-            "get-all-products": "Alle producten ophalen",
+            "get-all-products": "Alle producten ophalen via BSN",
             productUuid: 'De UUID van het product',
             productNaam: 'De naam van het product',
             productTypeUuid: 'De UUID van het producttype',
@@ -67,6 +67,7 @@ const openProductPluginSpecification: PluginSpecification = {
             authenticationPluginConfiguration: 'Selecteer de authenticatie plugin configuratie',
             dataobjectVariabelNaam: 'Naam van de procesvariabele voor het dataobject (optioneel)',
             producttypeUuid: 'UUID van het producttype om op te filteren (optioneel)',
+            status: 'Status van het product om op te filteren (optioneel, bijv. gereed, actief)',
             resultaatVariabelNaam: 'Naam van de procesvariabele voor de resultatenlijst (standaard: alleProducten)',
         },
         en: {
@@ -92,6 +93,7 @@ const openProductPluginSpecification: PluginSpecification = {
             authenticationPluginConfiguration: 'Select the authentication plugin configuration',
             dataobjectVariabelNaam: 'Process variable name for the data object (optional)',
             producttypeUuid: 'Product type UUID to filter on (optional)',
+            status: 'Product status to filter on (optional, e.g. gereed, actief)',
             resultaatVariabelNaam: 'Process variable name for the results list (default: alleProducten)',
         },
         de: {
@@ -112,6 +114,7 @@ const openProductPluginSpecification: PluginSpecification = {
             authenticationPluginConfiguration: 'Wählen Sie die Authentifizierungs-Plugin-Konfiguration aus',
             dataobjectVariabelNaam: 'Prozessvariablenname für das Datenobjekt (optional)',
             producttypeUuid: 'Produkttyp-UUID zum Filtern (optional)',
+            status: 'Produktstatus zum Filtern (optional, z. B. gereed, actief)',
             resultaatVariabelNaam: 'Prozessvariablenname für die Ergebnisliste (Standard: alleProducten)',
         }
     }
