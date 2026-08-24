@@ -85,10 +85,10 @@ class OpenProductPlugin(
     fun getZaakDocumenten(
         execution: DelegateExecution,
         @PluginActionProperty aanvraagZaakUrl: String,
-        @PluginActionProperty resultaatVariabelNaam: String?,
+        @PluginActionProperty zaakDocumentenVariabelNaam: String?,
     ) {
         val documenten = fetchZaakDocumentUrls(execution, aanvraagZaakUrl).map { mapOf("url" to it.url) }
-        execution.setVariable(resultaatVariabelNaam ?: "zaakDocumenten", documenten)
+        execution.setVariable(zaakDocumentenVariabelNaam ?: "zaakDocumenten", documenten)
         execution.setVariable("resultaatPV", "Documenten opgehaald: ${documenten.size}")
     }
 

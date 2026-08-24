@@ -26,11 +26,12 @@ import {CreateProductConfigurationComponent} from './components/create-product/c
 import {UpdateProductConfigurationComponent} from "./components/update-product/update-product-configuration.component";
 import {DeleteProductConfigurationComponent} from "./components/delete-product/delete-product-configuration.component";
 import {GetAllProductsConfigurationComponent} from "./components/get-all-products/get-all-products-configuration.component";
+import {GetZaakDocumentenConfigurationComponent} from "./components/get-zaak-documenten/get-zaak-documenten-configuration.component";
 
 @NgModule({
-    declarations: [OpenProductConfigurationComponent, GetProductConfigurationComponent, GetAllProductsConfigurationComponent, CreateProductConfigurationComponent, UpdateProductConfigurationComponent, DeleteProductConfigurationComponent],
+    declarations: [OpenProductConfigurationComponent, GetProductConfigurationComponent, GetAllProductsConfigurationComponent, GetZaakDocumentenConfigurationComponent, CreateProductConfigurationComponent, UpdateProductConfigurationComponent, DeleteProductConfigurationComponent],
     imports: [CommonModule, PluginTranslatePipeModule, FormModule, InputModule, SelectModule, CarbonMultiInputModule],
-    exports: [OpenProductConfigurationComponent, GetProductConfigurationComponent, GetAllProductsConfigurationComponent, CreateProductConfigurationComponent, UpdateProductConfigurationComponent, DeleteProductConfigurationComponent],
+    exports: [OpenProductConfigurationComponent, GetProductConfigurationComponent, GetAllProductsConfigurationComponent, GetZaakDocumentenConfigurationComponent, CreateProductConfigurationComponent, UpdateProductConfigurationComponent, DeleteProductConfigurationComponent],
 })
 export class OpenProductPluginModule {
 }

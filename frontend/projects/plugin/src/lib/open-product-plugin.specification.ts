@@ -26,6 +26,9 @@ import {DeleteProductConfigurationComponent} from "./components/delete-product/d
 import {
     GetAllProductsConfigurationComponent
 } from "./components/get-all-products/get-all-products-configuration.component";
+import {
+    GetZaakDocumentenConfigurationComponent
+} from "./components/get-zaak-documenten/get-zaak-documenten-configuration.component";
 
 const openProductPluginSpecification: PluginSpecification = {
     pluginId: 'openproduct',
@@ -38,6 +41,7 @@ const openProductPluginSpecification: PluginSpecification = {
          */
         'get-product': GetProductConfigurationComponent,
         'get-all-products': GetAllProductsConfigurationComponent,
+        'get-zaak-documenten': GetZaakDocumentenConfigurationComponent,
         'create-product': CreateProductConfigurationComponent,
         'update-product': UpdateProductConfigurationComponent,
         'delete-product': DeleteProductConfigurationComponent
@@ -55,6 +59,8 @@ const openProductPluginSpecification: PluginSpecification = {
             "delete-product": "Product verwijderen via UUID",
             "update-product": "Product bijwerken via UUID",
             "get-all-products": "Alle producten ophalen via BSN",
+            "get-zaak-documenten": "Zaakdocumenten ophalen als productdocumenten",
+            aanvraagZaakUrl: 'De URL van de zaak',
             productUuid: 'De UUID van het product',
             productNaam: 'De naam van het product',
             productTypeUuid: 'De UUID van het producttype',
@@ -81,6 +87,8 @@ const openProductPluginSpecification: PluginSpecification = {
             "delete-product": "Delete product via UUID",
             "update-product": "Update product via UUID",
             "get-all-products": "Retrieve all products",
+            "get-zaak-documenten": "Retrieve zaak documents as product documents",
+            aanvraagZaakUrl: 'The URL of the zaak',
             productUuid: 'The UUID of the product',
             productNaam: 'The name of the product',
             productTypeUuid: 'The UUID of the product type',
@@ -102,6 +110,7 @@ const openProductPluginSpecification: PluginSpecification = {
             configurationTitle: 'Konfigurationsname',
             configurationTitleTooltip: 'Der Name, mit dem diese Konfiguration identifiziert wird.',
             baseUrl: 'URL',
+            aanvraagZaakUrl: 'Die URL der Zaak',
             productUuid: 'Die UUID des Produkts',
             productNaam: 'Der Name des Produkts',
             productTypeUuid: 'Die UUID des Produkttyps',
