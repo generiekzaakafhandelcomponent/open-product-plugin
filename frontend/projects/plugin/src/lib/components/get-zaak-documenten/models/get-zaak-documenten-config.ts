@@ -1,6 +1,6 @@
 interface GetZaakDocumentenConfig {
     aanvraagZaakUrl?: string;
-    resultaatVariabelNaam?: string;
+    zaakDocumentenVariabelNaam?: string;
 }
 
 export {GetZaakDocumentenConfig};

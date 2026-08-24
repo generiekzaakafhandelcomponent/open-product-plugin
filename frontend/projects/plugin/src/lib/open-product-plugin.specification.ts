@@ -75,6 +75,7 @@ const openProductPluginSpecification: PluginSpecification = {
             producttypeUuid: 'UUID van het producttype om op te filteren (optioneel)',
             status: 'Status van het product om op te filteren (optioneel, bijv. gereed, actief)',
             resultaatVariabelNaam: 'Naam van de procesvariabele voor de resultatenlijst (standaard: alleProducten)',
+            zaakDocumentenVariabelNaam: 'Naam van de procesvariabele voor de zaakdocumentenlijst (standaard: zaakDocumenten)',
         },
         en: {
             title: 'Open Product Plugin',
@@ -103,6 +104,7 @@ const openProductPluginSpecification: PluginSpecification = {
             producttypeUuid: 'Product type UUID to filter on (optional)',
             status: 'Product status to filter on (optional, e.g. gereed, actief)',
             resultaatVariabelNaam: 'Process variable name for the results list (default: alleProducten)',
+            zaakDocumentenVariabelNaam: 'Process variable name for the zaak documents list (default: zaakDocumenten)',
         },
         de: {
             title: 'Open Product Plugin',
@@ -125,6 +127,7 @@ const openProductPluginSpecification: PluginSpecification = {
             producttypeUuid: 'Produkttyp-UUID zum Filtern (optional)',
             status: 'Produktstatus zum Filtern (optional, z. B. gereed, actief)',
             resultaatVariabelNaam: 'Prozessvariablenname für die Ergebnisliste (Standard: alleProducten)',
+            zaakDocumentenVariabelNaam: 'Prozessvariablenname für die Zaakdokumentenliste (Standard: zaakDocumenten)',
         }
     }
 };
