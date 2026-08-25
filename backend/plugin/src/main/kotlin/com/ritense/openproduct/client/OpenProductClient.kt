@@ -48,9 +48,9 @@ class OpenProductClient {
             )
         val uri =
             if (queryParams.isNotEmpty()) {
-                "/producten/api/v1/producten?${queryParams.joinToString("&")}"
+                "${urlPath.dropLast(1)}?${queryParams.joinToString("&")}"
             } else {
-                "/producten/api/v1/producten"
+                urlPath.dropLast(1)
             }
 
         val response =
@@ -79,7 +79,7 @@ class OpenProductClient {
         val response =
             restClient
                 .post()
-                .uri("/producten/api/v1/producten")
+                .uri(urlPath.dropLast(1))
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(requestJson)
                 .retrieve()
