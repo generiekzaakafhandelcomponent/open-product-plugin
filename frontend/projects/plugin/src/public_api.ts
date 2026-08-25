@@ -24,6 +24,7 @@ export * from './lib/open-product-plugin.specification';
 export * from './lib/components/open-product-configuration/open-product-configuration.component';
 export * from './lib/components/get-product/get-product-configuration.component';
 export * from './lib/components/get-all-products/get-all-products-configuration.component';
+export * from './lib/components/get-zaak-documenten/get-zaak-documenten-configuration.component';
 export * from './lib/components/create-product/create-product-configuration.component';
 export * from './lib/components/delete-product/delete-product-configuration.component';
 export * from './lib/components/update-product/update-product-configuration.component';

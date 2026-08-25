@@ -26,6 +26,9 @@ import {DeleteProductConfigurationComponent} from "./components/delete-product/d
 import {
     GetAllProductsConfigurationComponent
 } from "./components/get-all-products/get-all-products-configuration.component";
+import {
+    GetZaakDocumentenConfigurationComponent
+} from "./components/get-zaak-documenten/get-zaak-documenten-configuration.component";
 
 const openProductPluginSpecification: PluginSpecification = {
     pluginId: 'openproduct',
@@ -38,6 +41,7 @@ const openProductPluginSpecification: PluginSpecification = {
          */
         'get-product': GetProductConfigurationComponent,
         'get-all-products': GetAllProductsConfigurationComponent,
+        'get-zaak-documenten': GetZaakDocumentenConfigurationComponent,
         'create-product': CreateProductConfigurationComponent,
         'update-product': UpdateProductConfigurationComponent,
         'delete-product': DeleteProductConfigurationComponent
@@ -54,7 +58,9 @@ const openProductPluginSpecification: PluginSpecification = {
             "create-product": "Product aanmaken",
             "delete-product": "Product verwijderen via UUID",
             "update-product": "Product bijwerken via UUID",
-            "get-all-products": "Alle producten ophalen",
+            "get-all-products": "Alle producten ophalen via BSN",
+            "get-zaak-documenten": "Zaakdocumenten ophalen als productdocumenten",
+            aanvraagZaakUrl: 'De URL van de zaak',
             productUuid: 'De UUID van het product',
             productNaam: 'De naam van het product',
             productTypeUuid: 'De UUID van het producttype',
@@ -67,7 +73,9 @@ const openProductPluginSpecification: PluginSpecification = {
             authenticationPluginConfiguration: 'Selecteer de authenticatie plugin configuratie',
             dataobjectVariabelNaam: 'Naam van de procesvariabele voor het dataobject (optioneel)',
             producttypeUuid: 'UUID van het producttype om op te filteren (optioneel)',
+            status: 'Status van het product om op te filteren (optioneel, bijv. gereed, actief)',
             resultaatVariabelNaam: 'Naam van de procesvariabele voor de resultatenlijst (standaard: alleProducten)',
+            zaakDocumentenVariabelNaam: 'Naam van de procesvariabele voor de zaakdocumentenlijst (standaard: zaakDocumenten)',
         },
         en: {
             title: 'Open Product Plugin',
@@ -80,6 +88,8 @@ const openProductPluginSpecification: PluginSpecification = {
             "delete-product": "Delete product via UUID",
             "update-product": "Update product via UUID",
             "get-all-products": "Retrieve all products",
+            "get-zaak-documenten": "Retrieve zaak documents as product documents",
+            aanvraagZaakUrl: 'The URL of the zaak',
             productUuid: 'The UUID of the product',
             productNaam: 'The name of the product',
             productTypeUuid: 'The UUID of the product type',
@@ -92,7 +102,9 @@ const openProductPluginSpecification: PluginSpecification = {
             authenticationPluginConfiguration: 'Select the authentication plugin configuration',
             dataobjectVariabelNaam: 'Process variable name for the data object (optional)',
             producttypeUuid: 'Product type UUID to filter on (optional)',
+            status: 'Product status to filter on (optional, e.g. gereed, actief)',
             resultaatVariabelNaam: 'Process variable name for the results list (default: alleProducten)',
+            zaakDocumentenVariabelNaam: 'Process variable name for the zaak documents list (default: zaakDocumenten)',
         },
         de: {
             title: 'Open Product Plugin',
@@ -100,6 +112,7 @@ const openProductPluginSpecification: PluginSpecification = {
             configurationTitle: 'Konfigurationsname',
             configurationTitleTooltip: 'Der Name, mit dem diese Konfiguration identifiziert wird.',
             baseUrl: 'URL',
+            aanvraagZaakUrl: 'Die URL der Zaak',
             productUuid: 'Die UUID des Produkts',
             productNaam: 'Der Name des Produkts',
             productTypeUuid: 'Die UUID des Produkttyps',
@@ -112,7 +125,9 @@ const openProductPluginSpecification: PluginSpecification = {
             authenticationPluginConfiguration: 'Wählen Sie die Authentifizierungs-Plugin-Konfiguration aus',
             dataobjectVariabelNaam: 'Prozessvariablenname für das Datenobjekt (optional)',
             producttypeUuid: 'Produkttyp-UUID zum Filtern (optional)',
+            status: 'Produktstatus zum Filtern (optional, z. B. gereed, actief)',
             resultaatVariabelNaam: 'Prozessvariablenname für die Ergebnisliste (Standard: alleProducten)',
+            zaakDocumentenVariabelNaam: 'Prozessvariablenname für die Zaakdokumentenliste (Standard: zaakDocumenten)',
         }
     }
 };

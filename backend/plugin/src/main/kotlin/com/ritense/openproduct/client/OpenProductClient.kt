@@ -35,14 +35,22 @@ class OpenProductClient {
         baseUrl: String,
         authenticationPlugin: TokenAuthenticationPlugin,
         producttypeUuid: String? = null,
+        eigenaarBsn: String? = null,
+        status: String? = null,
     ): List<ProductResponse>? {
         val restClient = getRestclient(baseUrl, authenticationPlugin)
 
+        val queryParams =
+            listOfNotNull(
+                producttypeUuid?.let { "producttype__uuid=$it" },
+                eigenaarBsn?.let { "eigenaren__bsn=$it" },
+                status?.let { "status=$it" },
+            )
         val uri =
-            if (producttypeUuid != null) {
-                "/producten/api/v1/producten?producttype__uuid=$producttypeUuid"
+            if (queryParams.isNotEmpty()) {
+                "${urlPath.dropLast(1)}?${queryParams.joinToString("&")}"
             } else {
-                "/producten/api/v1/producten"
+                urlPath.dropLast(1)
             }
 
         val response =
@@ -71,7 +79,7 @@ class OpenProductClient {
         val response =
             restClient
                 .post()
-                .uri("/producten/api/v1/producten")
+                .uri(urlPath.dropLast(1))
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(requestJson)
                 .retrieve()
