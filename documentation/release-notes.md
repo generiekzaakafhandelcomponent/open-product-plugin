@@ -2,6 +2,10 @@
 
 Overzicht van wijzigingen per versie van de Open Product-plugin.
 
+## 1.3.1
+
+Ondersteuning voor Valtimo 13.48.0.
+
 ## 1.2.1
 
 Valtimo bijgewerkt naar versie 13.41.0.
