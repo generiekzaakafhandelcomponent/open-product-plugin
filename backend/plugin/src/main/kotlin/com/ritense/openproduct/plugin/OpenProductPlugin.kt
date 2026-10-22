@@ -16,11 +16,15 @@
 
 package com.ritense.openproduct.plugin
 
+import com.ritense.openproduct.client.DataBindingConfig
 import com.ritense.openproduct.client.DocumentRequest
 import com.ritense.openproduct.client.EigenaarRequest
 import com.ritense.openproduct.client.FrequentieEnum
 import com.ritense.openproduct.client.OpenProductClient
+import com.ritense.openproduct.client.ProductDetails
 import com.ritense.openproduct.client.ProductRequest
+import com.ritense.openproduct.client.ProducttypeDetails
+import com.ritense.openproduct.client.ProducttypeSchema
 import com.ritense.openproduct.client.StatusEnum
 import com.ritense.plugin.annotation.Plugin
 import com.ritense.plugin.annotation.PluginAction
@@ -33,6 +37,7 @@ import com.ritense.valueresolver.ValueResolverService
 import com.ritense.zakenapi.ZakenApiPlugin
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.operaton.bpm.engine.delegate.DelegateExecution
+import java.math.BigInteger
 import java.net.URI
 import java.util.UUID
 
@@ -265,6 +270,102 @@ class OpenProductPlugin(
         execution.setVariable("resultaatPV", "Product verwijderd met UUID: $productUuid")
     }
 
+    @PluginAction(
+        key = "create-or-update-product",
+        title = "Create or update product plugin action",
+        description = "Create the owner's product of a product type, or update it when the owner already has one",
+        activityTypes = [ActivityTypeWithEventName.SERVICE_TASK_START],
+    )
+    fun createOrUpdateProduct(
+        execution: DelegateExecution,
+        @PluginActionProperty producttypeUuid: String,
+        @PluginActionProperty eigenaarType: String,
+        @PluginActionProperty eigenaarIdentificatie: String?,
+        @PluginActionProperty eigenaarVestigingsnummer: String?,
+        @PluginActionProperty productNaam: String?,
+        @PluginActionProperty productStatus: String?,
+        @PluginActionProperty productPrijs: String?,
+        @PluginActionProperty productFrequentie: String?,
+        @PluginActionProperty gepubliceerd: Boolean?,
+        @PluginActionProperty startDatum: String?,
+        @PluginActionProperty eindDatum: String?,
+        @PluginActionProperty aanvraagZaakUrn: String?,
+        @PluginActionProperty aanvraagZaakUrl: String?,
+        @PluginActionProperty documenten: List<Map<String, Any?>>?,
+        @PluginActionProperty dataobjectMapping: List<DataBindingConfig>?,
+        @PluginActionProperty resultaatVariabelNaam: String?,
+    ) {
+        require(producttypeUuid.isNotBlank()) {
+            "Open Product: het producttype is leeg, dus kan niet worden bepaald of het product al bestaat"
+        }
+        val eigenaar = toEigenaar(eigenaarType, eigenaarIdentificatie, eigenaarVestigingsnummer)
+        val dataobject = resolveDataobjectMapping(execution, producttypeUuid, dataobjectMapping.orEmpty())
+        val documentUrls = documenten?.mapNotNull { it["url"] as? String }
+        val fields =
+            mapOf(
+                "naam" to productNaam,
+                "status" to productStatus,
+                "prijs" to productPrijs,
+                "frequentie" to productFrequentie,
+                "gepubliceerd" to gepubliceerd,
+                "start_datum" to startDatum,
+                "eind_datum" to eindDatum,
+            ).filterValues { it != null && it.toString().isNotBlank() }
+
+        val currentProducts =
+            openProductClient
+                .findProducten(baseUrl, authenticationPluginConfiguration, producttypeUuid, eigenaar)
+                .filter { it.status !in ENDED_STATUSES }
+
+        val product =
+            when (currentProducts.size) {
+                0 -> {
+                    // Open Producten 1.7 fails with a server error on a create without status.
+                    val createFields =
+                        mapOf("status" to INITIAL_STATUS) +
+                            fields +
+                            mapOf(
+                                "producttype_uuid" to producttypeUuid,
+                                "eigenaren" to listOf(eigenaar),
+                                "aanvraag_zaak_urn" to aanvraagZaakUrn,
+                                "aanvraag_zaak_url" to aanvraagZaakUrl,
+                                "dataobject" to dataobject.ifEmpty { null },
+                                "documenten" to documentUrls?.distinct()?.map { mapOf("url" to it) },
+                            ).filterValues { it != null && it.toString().isNotBlank() }
+                    openProductClient.postProduct(baseUrl, authenticationPluginConfiguration, createFields).also {
+                        logger.info { "Created product ${it.uuid} of product type $producttypeUuid" }
+                    }
+                }
+                1 -> {
+                    val existing = currentProducts.single()
+                    val mergedDataobject = dataobject.ifEmpty { null }?.let { existing.dataobject.orEmpty() + it }
+                    val updateFields =
+                        fields +
+                            listOfNotNull(
+                                mergedDataobject?.let { "dataobject" to it },
+                                documentUrls?.let { "documenten" to mergeDocumenten(existing, it) },
+                            )
+                    openProductClient
+                        .patchProduct(baseUrl, authenticationPluginConfiguration, existing.uuid, updateFields)
+                        .also { logger.info { "Updated product ${it.uuid} of product type $producttypeUuid" } }
+                }
+                else -> throw IllegalStateException(
+                    "Open Product: de eigenaar heeft ${currentProducts.size} lopende producten van producttype " +
+                        "$producttypeUuid (${currentProducts.joinToString { it.uuid.toString() }}); " +
+                        "kies het product met de actie 'Product bijwerken via UUID'",
+                )
+            }
+
+        execution.setVariable(resultaatVariabelNaam?.ifBlank { null } ?: "productUuid", product.uuid.toString())
+        execution.setVariable("resultaatPV", "Product opgeslagen met UUID: ${product.uuid}")
+    }
+
+    fun getProducttypen(): List<ProducttypeDetails> =
+        openProductClient.getProducttypen(baseUrl, authenticationPluginConfiguration)
+
+    fun getDataobjectSchema(producttypeUuid: String): ProducttypeSchema? =
+        openProductClient.getProducttype(baseUrl, authenticationPluginConfiguration, producttypeUuid).dataobjectSchema
+
     fun toFreqEnum(frequentie: String): FrequentieEnum =
         when (frequentie) {
             "eenmalig" -> FrequentieEnum.EENMALIG
@@ -317,7 +418,114 @@ class OpenProductPlugin(
             }
         }
 
+    private fun toEigenaar(
+        eigenaarType: String,
+        identificatie: String?,
+        vestigingsnummer: String?,
+    ): EigenaarRequest {
+        require(!identificatie.isNullOrBlank()) {
+            "Open Product: de eigenaar ($eigenaarType) is leeg, dus kan niet worden bepaald of het product al bestaat"
+        }
+        return when (eigenaarType) {
+            "bsn" -> EigenaarRequest(bsn = identificatie)
+            "kvk_nummer" ->
+                EigenaarRequest(
+                    kvkNummer = identificatie,
+                    vestigingsnummer = vestigingsnummer?.ifBlank { null },
+                )
+            "klantnummer" -> EigenaarRequest(klantnummer = identificatie)
+            else -> throw IllegalArgumentException("Ongeldig eigenaartype: $eigenaarType")
+        }
+    }
+
+    private fun resolveDataobjectMapping(
+        execution: DelegateExecution,
+        producttypeUuid: String,
+        mapping: List<DataBindingConfig>,
+    ): Map<String, Any> {
+        val entries = mapping.filter { it.key.isNotBlank() && it.value.isNotBlank() }
+        if (entries.isEmpty()) {
+            return emptyMap()
+        }
+        // Only values with a known prefix are references; other text, such as 'Aanvraag: 2026', is a fixed value.
+        val references = entries.map { it.value }.filter { isReference(it) }.toSet()
+        val resolvedReferences = valueResolverService.resolveValues(execution.processInstanceId, execution, references)
+        val properties =
+            openProductClient
+                .getProducttype(baseUrl, authenticationPluginConfiguration, producttypeUuid)
+                .dataobjectSchema
+                ?.schema
+                ?.get("properties") as? Map<*, *>
+        return entries
+            .mapNotNull { entry ->
+                val value = if (entry.value in references) resolvedReferences[entry.value] else entry.value
+                value?.let { entry.key to toSchemaType(it, properties?.get(entry.key) as? Map<*, *>) }
+            }.toMap()
+    }
+
+    // http(s) values are fixed values; Valtimo's resolver would cut them off at the '?'.
+    private fun isReference(value: String): Boolean =
+        value.contains(':') &&
+            !value.startsWith("http:") &&
+            !value.startsWith("https:") &&
+            valueResolverService.supportsValue(value)
+
+    private fun toSchemaType(
+        value: Any,
+        propertySchema: Map<*, *>?,
+    ): Any {
+        val types =
+            when (val type = propertySchema?.get("type")) {
+                is String -> listOf(type)
+                is List<*> -> type.filterIsInstance<String>()
+                else -> emptyList()
+            }
+        if (types.isEmpty() || value is Map<*, *> || value is Collection<*> || types.any { hasSchemaType(value, it) }) {
+            return value
+        }
+        return types.firstNotNullOfOrNull { convertToSchemaType(value.toString(), it) } ?: value
+    }
+
+    private fun hasSchemaType(
+        value: Any,
+        type: String,
+    ): Boolean =
+        when (type) {
+            "string" -> value is String
+            "integer" -> value is Int || value is Long || value is Short || value is BigInteger
+            "number" -> value is Number
+            "boolean" -> value is Boolean
+            else -> false
+        }
+
+    private fun convertToSchemaType(
+        value: String,
+        type: String,
+    ): Any? =
+        when (type) {
+            "string" -> value
+            "integer" -> value.trim().toBigIntegerOrNull()
+            "number" -> value.trim().toBigDecimalOrNull()
+            "boolean" -> value.trim().toBooleanStrictOrNull()
+            else -> null
+        }
+
+    // Keeps every current document, URN-only ones included, and adds the configured URLs it does not have yet.
+    private fun mergeDocumenten(
+        existing: ProductDetails,
+        urls: List<String>,
+    ): List<Map<String, String>> {
+        val current =
+            existing.documenten.orEmpty().map { document ->
+                listOfNotNull(document.url?.let { "url" to it }, document.urn?.let { "urn" to it }).toMap()
+            }
+        val currentUrls = current.mapNotNull { it["url"] }.toSet()
+        return current + urls.distinct().filter { it !in currentUrls }.map { mapOf("url" to it) }
+    }
+
     companion object {
         private val logger = KotlinLogging.logger {}
+        private val ENDED_STATUSES = setOf("ingetrokken", "geweigerd", "verlopen")
+        private const val INITIAL_STATUS = "initieel"
     }
 }

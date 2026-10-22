@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:operaton="http://operaton.org/schema/1.0/bpmn" id="Definitions_open_product_action_test" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="open-product-action-test" name="Open Product action test" isExecutable="true">
+    <bpmn:startEvent id="start">
+      <bpmn:outgoing>flow-1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="open-product-action" name="Open Product action" operaton:expression="${true}">
+      <bpmn:incoming>flow-1</bpmn:incoming>
+      <bpmn:outgoing>flow-2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="wait" name="Wait">
+      <bpmn:incoming>flow-2</bpmn:incoming>
+      <bpmn:outgoing>flow-3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="end">
+      <bpmn:incoming>flow-3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="flow-1" sourceRef="start" targetRef="open-product-action" />
+    <bpmn:sequenceFlow id="flow-2" sourceRef="open-product-action" targetRef="wait" />
+    <bpmn:sequenceFlow id="flow-3" sourceRef="wait" targetRef="end" />
+  </bpmn:process>
+</bpmn:definitions>

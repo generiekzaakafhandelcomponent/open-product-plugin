@@ -17,10 +17,14 @@
 package com.ritense.openproduct.plugin
 
 import com.ritense.openproduct.client.OpenProductClient
+import com.ritense.openproduct.security.OpenProductHttpSecurityConfigurer
+import com.ritense.openproduct.web.rest.OpenProductManagementResource
 import com.ritense.plugin.service.PluginService
 import com.ritense.valueresolver.ValueResolverService
 import org.springframework.boot.autoconfigure.AutoConfiguration
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean
+import org.springframework.core.annotation.Order
 
 @AutoConfiguration
 class OpenProductPluginAutoConfiguration {
@@ -33,4 +37,14 @@ class OpenProductPluginAutoConfiguration {
 
     @Bean
     fun openProductClient(): OpenProductClient = OpenProductClient()
+
+    @Bean
+    @ConditionalOnMissingBean(OpenProductManagementResource::class)
+    fun openProductManagementResource(pluginService: PluginService): OpenProductManagementResource =
+        OpenProductManagementResource(pluginService)
+
+    @Bean
+    @Order(270)
+    @ConditionalOnMissingBean(OpenProductHttpSecurityConfigurer::class)
+    fun openProductHttpSecurityConfigurer(): OpenProductHttpSecurityConfigurer = OpenProductHttpSecurityConfigurer()
 }

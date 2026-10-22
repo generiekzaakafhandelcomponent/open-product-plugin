@@ -17,6 +17,7 @@
 val jacksonModuleKotlinVersion: String by project
 val tokenAuthenticationVersion: String by project
 val kotlinLoggingVersion: String by project
+val okhttpVersion: String by project
 
 dockerCompose {
     setProjectName("open-product")
@@ -38,6 +39,7 @@ dependencies {
     compileOnly("com.ritense.valtimoplugins:token-authentication:$tokenAuthenticationVersion")
 
     compileOnly("org.springframework.boot:spring-boot-starter-web")
+    compileOnly("org.springframework.boot:spring-boot-starter-security")
     compileOnly("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonModuleKotlinVersion")
 
     compileOnly("io.github.oshai:kotlin-logging:$kotlinLoggingVersion")
@@ -58,6 +60,8 @@ dependencies {
     testImplementation("com.ritense.valtimo:test-utils-common")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("com.squareup.okhttp3:mockwebserver:$okhttpVersion")
 
     testImplementation("org.postgresql:postgresql")
 
