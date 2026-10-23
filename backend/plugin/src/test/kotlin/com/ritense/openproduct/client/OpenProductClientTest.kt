@@ -69,6 +69,17 @@ class OpenProductClientTest {
     }
 
     @Test
+    fun `should call the configured base url when it ends with a slash`() {
+        server.enqueue(
+            json("""{"uuid": "$PRODUCTTYPE_UUID", "naam": "Parkeervergunning", "dataobject_schema": null}"""),
+        )
+
+        client.getProducttype("$baseUrl/", authentication, PRODUCTTYPE_UUID)
+
+        assertThat(server.takeRequest().path).isEqualTo("/producttypen/api/v1/producttypen/$PRODUCTTYPE_UUID")
+    }
+
+    @Test
     fun `should return the product types of every result page`() {
         server.enqueue(
             json(

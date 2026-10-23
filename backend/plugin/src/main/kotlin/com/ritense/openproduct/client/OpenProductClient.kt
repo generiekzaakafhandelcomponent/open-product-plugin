@@ -244,7 +244,7 @@ class OpenProductClient {
     ): RestClient =
         authenticationPlugin
             .applyAuth(RestClient.builder())
-            .baseUrl(baseUrl)
+            .baseUrl(baseUrl.removeSuffix("/"))
             .build()
 
     // Follows 'next' by its query only, so a base URL behind a proxy or with a path prefix keeps working.
@@ -298,13 +298,13 @@ class OpenProductClient {
             // The query is left out of the log: it holds the owner's BSN or KVK number.
             val path = uri.substringBefore('?')
             logger.error {
-                "Open Producten $operation failed: $method $baseUrl$path returned ${e.statusCode.value()} " +
+                "Open Producten $operation failed: $method ${baseUrl.removeSuffix("/")}$path returned ${e.statusCode.value()} " +
                     "with body: ${e.responseBodyAsString}"
             }
             throw withReadableMessage(operation, e)
         } catch (e: ResourceAccessException) {
             val path = uri.substringBefore('?')
-            logger.error(e) { "Open Producten $operation failed: $method $baseUrl$path could not be reached" }
+            logger.error(e) { "Open Producten $operation failed: $method ${baseUrl.removeSuffix("/")}$path could not be reached" }
             throw ResourceAccessException(
                 "Open Producten: $operation mislukt, geen verbinding: ${e.mostSpecificCause.message}",
                 e.cause as? IOException,
