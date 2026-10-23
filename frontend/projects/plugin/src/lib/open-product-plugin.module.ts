@@ -18,6 +18,8 @@ import {
     OpenProductConfigurationComponent
 } from './components/open-product-configuration/open-product-configuration.component';
 import {CommonModule} from '@angular/common';
+import {ReactiveFormsModule} from '@angular/forms';
+import {InputModule as CarbonInputModule, SelectModule as CarbonSelectModule} from 'carbon-components-angular';
 import {CarbonMultiInputModule, FormModule, InputModule, SelectModule} from '@valtimo/components';
 import {NgModule} from '@angular/core';
 import {PluginTranslatePipeModule} from "@valtimo/plugin";
@@ -27,11 +29,12 @@ import {UpdateProductConfigurationComponent} from "./components/update-product/u
 import {DeleteProductConfigurationComponent} from "./components/delete-product/delete-product-configuration.component";
 import {GetAllProductsConfigurationComponent} from "./components/get-all-products/get-all-products-configuration.component";
 import {GetZaakDocumentenConfigurationComponent} from "./components/get-zaak-documenten/get-zaak-documenten-configuration.component";
+import {CreateOrUpdateProductConfigurationComponent} from "./components/create-or-update-product/create-or-update-product-configuration.component";
 
 @NgModule({
-    declarations: [OpenProductConfigurationComponent, GetProductConfigurationComponent, GetAllProductsConfigurationComponent, GetZaakDocumentenConfigurationComponent, CreateProductConfigurationComponent, UpdateProductConfigurationComponent, DeleteProductConfigurationComponent],
-    imports: [CommonModule, PluginTranslatePipeModule, FormModule, InputModule, SelectModule, CarbonMultiInputModule],
-    exports: [OpenProductConfigurationComponent, GetProductConfigurationComponent, GetAllProductsConfigurationComponent, GetZaakDocumentenConfigurationComponent, CreateProductConfigurationComponent, UpdateProductConfigurationComponent, DeleteProductConfigurationComponent],
+    declarations: [OpenProductConfigurationComponent, GetProductConfigurationComponent, GetAllProductsConfigurationComponent, GetZaakDocumentenConfigurationComponent, CreateProductConfigurationComponent, UpdateProductConfigurationComponent, DeleteProductConfigurationComponent, CreateOrUpdateProductConfigurationComponent],
+    imports: [CommonModule, PluginTranslatePipeModule, FormModule, InputModule, SelectModule, CarbonMultiInputModule, ReactiveFormsModule, CarbonInputModule, CarbonSelectModule],
+    exports: [OpenProductConfigurationComponent, GetProductConfigurationComponent, GetAllProductsConfigurationComponent, GetZaakDocumentenConfigurationComponent, CreateProductConfigurationComponent, UpdateProductConfigurationComponent, DeleteProductConfigurationComponent, CreateOrUpdateProductConfigurationComponent],
 })
 export class OpenProductPluginModule {
 }

@@ -317,6 +317,12 @@ services:
         # Only allow all hosts for development/testing purposes!
         ALLOWED_HOSTS: '*'
         OTEL_SDK_DISABLED: true
+    healthcheck:
+      test: [ "CMD", "python", "-c", "import requests; exit(requests.head('http://localhost:8000/admin/').status_code not in [200, 302])" ]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
 
   open-product-database:
     image: postgres:17.4

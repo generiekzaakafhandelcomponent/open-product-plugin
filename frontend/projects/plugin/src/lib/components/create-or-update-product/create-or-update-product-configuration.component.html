@@ -1,0 +1,114 @@
+<!--
+  ~ Copyright 2015-2025 Ritense BV, the Netherlands.
+  ~
+  ~ Licensed under EUPL, Version 1.2 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" basis,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<form class="create-or-update-product" [formGroup]="form">
+    <cds-select
+            class="create-or-update-product__field"
+            formControlName="producttypeUuid"
+            data-testid="producttype"
+            [label]="'producttypeKeuze' | pluginTranslate: pluginId | async"
+            [helperText]="'producttypeKeuzeTooltip' | pluginTranslate: pluginId | async"
+    >
+        <option value="" disabled hidden>{{ 'producttypeKiezen' | pluginTranslate: pluginId | async }}</option>
+        <option *ngFor="let producttype of producttypen$ | async" [value]="producttype.uuid">
+            {{ producttype.naam || producttype.code || producttype.uuid }}
+        </option>
+    </cds-select>
+    <p *ngIf="loadError$ | async" class="create-or-update-product__error" data-testid="load-error">
+        {{ 'openProductNietBereikbaar' | pluginTranslate: pluginId | async }}
+    </p>
+
+    <h4 class="create-or-update-product__heading">{{ 'eigenaarKop' | pluginTranslate: pluginId | async }}</h4>
+    <cds-select
+            class="create-or-update-product__field"
+            formControlName="eigenaarType"
+            data-testid="eigenaarType"
+            [label]="'eigenaarType' | pluginTranslate: pluginId | async"
+    >
+        <option *ngFor="let eigenaarType of eigenaarTypes" [value]="eigenaarType">
+            {{ 'eigenaarType_' + eigenaarType | pluginTranslate: pluginId | async }}
+        </option>
+    </cds-select>
+    <ng-container
+            *ngTemplateOutlet="valueRow; context: {group: form.get('eigenaarIdentificatie'), fieldKey: 'eigenaarIdentificatie', label: 'eigenaarIdentificatie', required: true}"
+    ></ng-container>
+    <ng-container *ngIf="form.get('eigenaarType').value === 'kvk_nummer'">
+        <ng-container
+                *ngTemplateOutlet="valueRow; context: {group: form.get('eigenaarVestigingsnummer'), fieldKey: 'eigenaarVestigingsnummer', label: 'eigenaarVestigingsnummer'}"
+        ></ng-container>
+    </ng-container>
+
+    <h4 class="create-or-update-product__heading">{{ 'productgegevensKop' | pluginTranslate: pluginId | async }}</h4>
+    <p class="create-or-update-product__hint">{{ 'productgegevensUitleg' | pluginTranslate: pluginId | async }}</p>
+    <ng-container *ngFor="let field of standardFields">
+        <ng-container
+                *ngTemplateOutlet="valueRow; context: {group: form.get(['standard', field.key]), fieldKey: field.key, label: field.key, options: field.options}"
+        ></ng-container>
+    </ng-container>
+    <cds-text-label class="create-or-update-product__field" [helperText]="'documentenTooltip' | pluginTranslate: pluginId | async">
+        {{ 'documenten' | pluginTranslate: pluginId | async }}
+        <input cdsText formControlName="documenten" data-testid="documenten" />
+    </cds-text-label>
+
+    <h4 class="create-or-update-product__heading">{{ 'dataobjectKop' | pluginTranslate: pluginId | async }}</h4>
+    <p
+            *ngIf="form.get('producttypeUuid').value && !(dataobjectFields$ | async)?.length"
+            class="create-or-update-product__hint"
+            data-testid="no-dataobject-fields"
+    >
+        {{ 'geenDataobjectVelden' | pluginTranslate: pluginId | async }}
+    </p>
+    <ng-container *ngFor="let field of dataobjectFields$ | async; let index = index">
+        <ng-container
+                *ngTemplateOutlet="valueRow; context: {group: dataobjectArray.at(index), fieldKey: 'dataobject.' + field.key, text: field.key + (field.type ? ' (' + field.type + ')' : ''), required: field.required}"
+        ></ng-container>
+    </ng-container>
+
+    <cds-text-label class="create-or-update-product__field" [helperText]="'resultaatVariabelNaamTooltip' | pluginTranslate: pluginId | async">
+        {{ 'resultaatVariabelNaamUpsert' | pluginTranslate: pluginId | async }}
+        <input cdsText formControlName="resultaatVariabelNaam" placeholder="productUuid" data-testid="resultaatVariabelNaam" />
+    </cds-text-label>
+</form>
+
+<ng-template #valueRow let-group="group" let-fieldKey="fieldKey" let-label="label" let-text="text" let-options="options" let-required="required">
+    <div class="create-or-update-product__value-row" [formGroup]="group" [attr.data-testid]="'row-' + fieldKey">
+        <span class="create-or-update-product__value-label">
+            {{ text || (label | pluginTranslate: pluginId | async) }}<span *ngIf="required"> *</span>
+        </span>
+        <cds-select size="sm" formControlName="mode" [attr.data-testid]="'mode-' + fieldKey">
+            <option value="fixed">{{ 'vasteWaarde' | pluginTranslate: pluginId | async }}</option>
+            <option value="pv">{{ 'procesvariabele' | pluginTranslate: pluginId | async }}</option>
+        </cds-select>
+        <cds-select
+                *ngIf="options && group.get('mode').value === 'fixed'; else textInput"
+                size="sm"
+                formControlName="value"
+                [attr.data-testid]="'value-' + fieldKey"
+        >
+            <option value=""></option>
+            <option *ngFor="let option of options" [value]="option">{{ option }}</option>
+        </cds-select>
+        <ng-template #textInput>
+            <input
+                    cdsText
+                    size="sm"
+                    formControlName="value"
+                    [attr.data-testid]="'value-' + fieldKey"
+                    [placeholder]="(group.get('mode').value === 'pv' ? 'procesvariabeleNaam' : 'vasteWaarde') | pluginTranslate: pluginId | async"
+            />
+        </ng-template>
+    </div>
+</ng-template>

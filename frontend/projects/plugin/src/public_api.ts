@@ -28,3 +28,4 @@ export * from './lib/components/get-zaak-documenten/get-zaak-documenten-configur
 export * from './lib/components/create-product/create-product-configuration.component';
 export * from './lib/components/delete-product/delete-product-configuration.component';
 export * from './lib/components/update-product/update-product-configuration.component';
+export * from './lib/components/create-or-update-product/create-or-update-product-configuration.component';
