@@ -94,4 +94,13 @@
             [disabled]="obs.disabled"
     >
     </v-input>
+    <v-select
+            name="koppelZaakDocumenten"
+            [items]="jaNeeSelectItems$ | async"
+            [title]="'koppelZaakDocumenten' | pluginTranslate: pluginId | async"
+            [tooltip]="'koppelZaakDocumentenTooltip' | pluginTranslate: pluginId | async"
+            [margin]="true"
+            [defaultSelectionId]="koppelZaakDocumentenSelectionId(obs.prefill)"
+            [disabled]="obs.disabled"
+    ></v-select>
 </v-form>

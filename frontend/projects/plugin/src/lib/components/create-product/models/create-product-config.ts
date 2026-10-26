@@ -9,6 +9,7 @@ interface CreateProductConfig {
     productFrequentie: string;
     productStatus: string;
     dataobjectVariabelNaam?: string;
+    koppelZaakDocumenten?: boolean;
 }
 
 export {CreateProductConfig};

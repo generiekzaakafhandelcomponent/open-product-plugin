@@ -15,3 +15,4 @@
  */
 
 export * from './config';
+export * from './ja-nee';
