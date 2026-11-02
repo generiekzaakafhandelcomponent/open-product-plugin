@@ -140,25 +140,32 @@ class OpenProductPlugin(
         @PluginActionProperty productNaam: String,
         @PluginActionProperty productTypeUuid: String,
         @PluginActionProperty eigenaarBsn: String,
-        @PluginActionProperty aanvraagZaakUrn: String,
-        @PluginActionProperty aanvraagZaakUrl: String,
-        @PluginActionProperty productPrijs: String,
+        @PluginActionProperty aanvraagZaakUrn: String?,
+        @PluginActionProperty aanvraagZaakUrl: String?,
+        @PluginActionProperty productPrijs: String?,
         @PluginActionProperty productStatus: String,
-        @PluginActionProperty productFrequentie: String,
+        @PluginActionProperty productFrequentie: String?,
         @PluginActionProperty gepubliceerd: java.lang.Boolean?,
         @PluginActionProperty dataobjectVariabelNaam: String?,
         @PluginActionProperty koppelZaakDocumenten: java.lang.Boolean?,
     ) {
-        val freqEnum = toFreqEnum(productFrequentie)
+        val freqEnum = productFrequentie?.takeIf { it.isNotBlank() }?.let { toFreqEnum(it) }
         val statusEnum = toStatusEnum(productStatus)
 
         val dataobjectMap = resolveDataobjectMap(execution, dataobjectVariabelNaam)
 
+        // Open Producten fills in the missing URN or URL itself via its URN_MAPPING_CONFIG,
+        // so either one is enough. Blank values are left out so they don't fail validation.
+        val zaakUrn = aanvraagZaakUrn?.takeIf { it.isNotBlank() }
+        val zaakUrl = aanvraagZaakUrl?.takeIf { it.isNotBlank() }
+
         val documentenList =
-            if (koppelZaakDocumenten == true) {
-                fetchZaakDocumentUrls(execution, aanvraagZaakUrl)
-            } else {
-                null
+            when {
+                koppelZaakDocumenten != true -> null
+                zaakUrl != null -> fetchZaakDocumentUrls(execution, zaakUrl)
+                else -> throw IllegalArgumentException(
+                    "koppelZaakDocumenten staat aan, maar aanvraagZaakUrl is leeg; zonder zaak-URL kunnen geen documenten worden opgehaald",
+                )
             }
 
         val resultaat =
@@ -175,9 +182,9 @@ class OpenProductPlugin(
                             ),
                         ),
                     gepubliceerd = gepubliceerd as Boolean?,
-                    aanvraagZaakUrn = aanvraagZaakUrn,
-                    aanvraagZaakUrl = aanvraagZaakUrl,
-                    prijs = productPrijs,
+                    aanvraagZaakUrn = zaakUrn,
+                    aanvraagZaakUrl = zaakUrl,
+                    prijs = productPrijs?.takeIf { it.isNotBlank() },
                     frequentie = freqEnum,
                     status = statusEnum,
                     dataobject = dataobjectMap,

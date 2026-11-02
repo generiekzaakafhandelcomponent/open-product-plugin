@@ -35,6 +35,10 @@ export class CreateProductConfigurationComponent
         this.openSaveSubscription();
     }
 
+    gepubliceerdSelectionId(prefill: CreateProductConfig | null): string {
+        return toJaNeeSelectionId(prefill?.gepubliceerd);
+    }
+
     koppelZaakDocumentenSelectionId(prefill: CreateProductConfig | null): string {
         return toJaNeeSelectionId(prefill?.koppelZaakDocumenten);
     }
@@ -50,7 +54,7 @@ export class CreateProductConfigurationComponent
     }
 
     private handleValid(formValue: CreateProductConfig): void {
-        const valid = !!(formValue.productTypeUuid && formValue.eigenaarBsn && formValue.productPrijs && formValue.productStatus && formValue.aanvraagZaakUrn);
+        const valid = !!(formValue.productTypeUuid && formValue.eigenaarBsn && formValue.productStatus && (formValue.aanvraagZaakUrn || formValue.aanvraagZaakUrl));
 
         this.valid$.next(valid);
         this.valid.emit(valid);
@@ -64,6 +68,7 @@ export class CreateProductConfigurationComponent
                     if (valid) {
                         this.configuration.emit({
                             ...formValue,
+                            gepubliceerd: fromJaNeeSelectionId(formValue.gepubliceerd),
                             koppelZaakDocumenten: fromJaNeeSelectionId(formValue.koppelZaakDocumenten),
                         });
                     }

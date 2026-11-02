@@ -322,15 +322,53 @@ class CreateOrUpdateProductIT : BaseIntegrationTest() {
                     "productPrijs" to "10.00",
                     "productStatus" to "initieel",
                     "productFrequentie" to "eenmalig",
+                    "gepubliceerd" to true,
                 ),
                 mapOf("zaakUrn" to "urn:nld:gemeente:zaak:1"),
             )
 
         val body = body(takeRequests().single())
         assertThat(body["naam"].asText()).isEqualTo("Vergunning")
+        assertThat(body["prijs"].asText()).isEqualTo("10.00")
         assertThat(body["frequentie"].asText()).isEqualTo("eenmalig")
+        assertThat(body["gepubliceerd"].asBoolean()).isTrue()
         assertThat(body["status"].asText()).isEqualTo("initieel")
         assertThat(body["eigenaren"].toString()).isEqualTo("""[{"bsn":"$BSN"}]""")
+        assertThat(runtimeService.getVariable(process.id, "aangemaaktProductUuid")).isEqualTo(NEW_UUID)
+    }
+
+    @Test
+    fun `should leave out an empty price and frequency in the create-product action`() {
+        responses["POST $PRODUCTEN_PATH"] =
+            json(
+                201,
+                """{"uuid": "$NEW_UUID", "url": "http://open-product/producten/$NEW_UUID", "naam": "Vergunning",
+                   "start_datum": null, "eind_datum": null, "aanmaak_datum": "2026-10-22T10:00:00Z",
+                   "update_datum": "2026-10-22T10:00:00Z", "producttype": {"uuid": "$PRODUCTTYPE_UUID"},
+                   "gepubliceerd": false, "eigenaren": [], "documenten": [], "status": "initieel",
+                   "prijs": "10.00", "frequentie": "eenmalig", "verbruiksobject": null, "dataobject": null}""",
+            )
+
+        val process =
+            startProcess(
+                "create-product",
+                mapOf(
+                    "productNaam" to "Vergunning",
+                    "productTypeUuid" to PRODUCTTYPE_UUID,
+                    "eigenaarBsn" to BSN,
+                    "aanvraagZaakUrn" to "pv:zaakUrn",
+                    "aanvraagZaakUrl" to "https://zaken.example/zaken/1",
+                    "productPrijs" to "",
+                    "productStatus" to "initieel",
+                    "productFrequentie" to "",
+                ),
+                mapOf("zaakUrn" to "urn:nld:gemeente:zaak:1"),
+            )
+
+        val body = body(takeRequests().single())
+        assertThat(body["naam"].asText()).isEqualTo("Vergunning")
+        assertThat(body.has("prijs")).isFalse()
+        assertThat(body.has("frequentie")).isFalse()
         assertThat(runtimeService.getVariable(process.id, "aangemaaktProductUuid")).isEqualTo(NEW_UUID)
     }
 
