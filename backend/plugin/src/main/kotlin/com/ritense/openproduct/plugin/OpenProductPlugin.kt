@@ -142,14 +142,16 @@ class OpenProductPlugin(
         @PluginActionProperty eigenaarBsn: String,
         @PluginActionProperty aanvraagZaakUrn: String?,
         @PluginActionProperty aanvraagZaakUrl: String?,
-        @PluginActionProperty productPrijs: String?,
+        @PluginActionProperty productPrijs: String,
         @PluginActionProperty productStatus: String,
-        @PluginActionProperty productFrequentie: String?,
+        @PluginActionProperty productFrequentie: String,
         @PluginActionProperty gepubliceerd: java.lang.Boolean?,
         @PluginActionProperty dataobjectVariabelNaam: String?,
         @PluginActionProperty koppelZaakDocumenten: java.lang.Boolean?,
     ) {
-        val freqEnum = productFrequentie?.takeIf { it.isNotBlank() }?.let { toFreqEnum(it) }
+        require(productPrijs.isNotBlank()) { "De prijs van het product is leeg" }
+        require(productFrequentie.isNotBlank()) { "De frequentie van het product is leeg" }
+        val freqEnum = toFreqEnum(productFrequentie)
         val statusEnum = toStatusEnum(productStatus)
 
         val dataobjectMap = resolveDataobjectMap(execution, dataobjectVariabelNaam)
@@ -184,7 +186,7 @@ class OpenProductPlugin(
                     gepubliceerd = gepubliceerd as Boolean?,
                     aanvraagZaakUrn = zaakUrn,
                     aanvraagZaakUrl = zaakUrl,
-                    prijs = productPrijs?.takeIf { it.isNotBlank() },
+                    prijs = productPrijs,
                     frequentie = freqEnum,
                     status = statusEnum,
                     dataobject = dataobjectMap,

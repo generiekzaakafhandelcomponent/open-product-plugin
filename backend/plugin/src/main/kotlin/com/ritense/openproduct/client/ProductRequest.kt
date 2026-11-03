@@ -32,9 +32,9 @@ data class ProductRequest(
     @JsonProperty("aanvraag_zaak_url")
     val aanvraagZaakUrl: String?,
     @JsonProperty("prijs")
-    val prijs: String? = null,
+    val prijs: String,
     @JsonProperty("frequentie")
-    val frequentie: FrequentieEnum? = null,
+    val frequentie: FrequentieEnum,
     @JsonProperty("verbruiksobject")
     val verbruiksobject: Map<String, Any>? = null,
     @JsonProperty("dataobject")

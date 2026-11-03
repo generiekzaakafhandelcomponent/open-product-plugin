@@ -338,39 +338,35 @@ class CreateOrUpdateProductIT : BaseIntegrationTest() {
     }
 
     @Test
-    fun `should leave out an empty price and frequency in the create-product action`() {
-        responses["POST $PRODUCTEN_PATH"] =
-            json(
-                201,
-                """{"uuid": "$NEW_UUID", "url": "http://open-product/producten/$NEW_UUID", "naam": "Vergunning",
-                   "start_datum": null, "eind_datum": null, "aanmaak_datum": "2026-10-22T10:00:00Z",
-                   "update_datum": "2026-10-22T10:00:00Z", "producttype": {"uuid": "$PRODUCTTYPE_UUID"},
-                   "gepubliceerd": false, "eigenaren": [], "documenten": [], "status": "initieel",
-                   "prijs": "10.00", "frequentie": "eenmalig", "verbruiksobject": null, "dataobject": null}""",
-            )
+    fun `should fail before calling Open Producten when the price of the create-product action is empty`() {
+        val exception = assertThrows<Exception> { startCreateProduct("productPrijs" to "") }
 
-        val process =
-            startProcess(
-                "create-product",
-                mapOf(
-                    "productNaam" to "Vergunning",
-                    "productTypeUuid" to PRODUCTTYPE_UUID,
-                    "eigenaarBsn" to BSN,
-                    "aanvraagZaakUrn" to "pv:zaakUrn",
-                    "aanvraagZaakUrl" to "https://zaken.example/zaken/1",
-                    "productPrijs" to "",
-                    "productStatus" to "initieel",
-                    "productFrequentie" to "",
-                ),
-                mapOf("zaakUrn" to "urn:nld:gemeente:zaak:1"),
-            )
-
-        val body = body(takeRequests().single())
-        assertThat(body["naam"].asText()).isEqualTo("Vergunning")
-        assertThat(body.has("prijs")).isFalse()
-        assertThat(body.has("frequentie")).isFalse()
-        assertThat(runtimeService.getVariable(process.id, "aangemaaktProductUuid")).isEqualTo(NEW_UUID)
+        assertThat(messages(exception)).contains("De prijs van het product is leeg")
+        assertThat(server.requestCount).isZero()
     }
+
+    @Test
+    fun `should fail before calling Open Producten when the frequency of the create-product action is empty`() {
+        val exception = assertThrows<Exception> { startCreateProduct("productFrequentie" to "") }
+
+        assertThat(messages(exception)).contains("De frequentie van het product is leeg")
+        assertThat(server.requestCount).isZero()
+    }
+
+    private fun startCreateProduct(vararg overrides: Pair<String, Any?>): ProcessInstance =
+        startProcess(
+            "create-product",
+            mapOf(
+                "productNaam" to "Vergunning",
+                "productTypeUuid" to PRODUCTTYPE_UUID,
+                "eigenaarBsn" to BSN,
+                "aanvraagZaakUrl" to "https://zaken.example/zaken/1",
+                "productPrijs" to "10.00",
+                "productStatus" to "initieel",
+                "productFrequentie" to "eenmalig",
+            ) + overrides,
+            emptyMap(),
+        )
 
     private fun startCreateOrUpdate(
         actionProperties: Map<String, Any?>,
