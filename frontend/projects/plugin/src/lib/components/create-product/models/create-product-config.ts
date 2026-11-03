@@ -3,10 +3,10 @@ interface CreateProductConfig {
     productTypeUuid: string;
     eigenaarBsn: string;
     aanvraagZaakUrn?: string;
-    aanvraagZaakUrl?: string;
+    aanvraagZaakUrl: string;
     gepubliceerd: boolean;
-    productPrijs?: string;
-    productFrequentie?: string;
+    productPrijs: string;
+    productFrequentie: string;
     productStatus: string;
     dataobjectVariabelNaam?: string;
     koppelZaakDocumenten?: boolean;
