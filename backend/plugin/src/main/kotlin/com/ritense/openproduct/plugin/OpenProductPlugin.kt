@@ -145,9 +145,9 @@ class OpenProductPlugin(
         @PluginActionProperty productPrijs: String,
         @PluginActionProperty productStatus: String,
         @PluginActionProperty productFrequentie: String,
-        @PluginActionProperty gepubliceerd: java.lang.Boolean?,
+        @PluginActionProperty gepubliceerd: Boolean?,
         @PluginActionProperty dataobjectVariabelNaam: String?,
-        @PluginActionProperty koppelZaakDocumenten: java.lang.Boolean?,
+        @PluginActionProperty koppelZaakDocumenten: Boolean?,
     ) {
         require(productPrijs.isNotBlank()) { "De prijs van het product is leeg" }
         require(productFrequentie.isNotBlank()) { "De frequentie van het product is leeg" }
@@ -160,14 +160,18 @@ class OpenProductPlugin(
         // so either one is enough. Blank values are left out so they don't fail validation.
         val zaakUrn = aanvraagZaakUrn?.takeIf { it.isNotBlank() }
         val zaakUrl = aanvraagZaakUrl?.takeIf { it.isNotBlank() }
+        require(zaakUrn != null || zaakUrl != null) {
+            "Either aanvraagZaakUrn or aanvraagZaakUrl must be set"
+        }
 
         val documentenList =
-            when {
-                koppelZaakDocumenten != true -> null
-                zaakUrl != null -> fetchZaakDocumentUrls(execution, zaakUrl)
-                else -> throw IllegalArgumentException(
-                    "koppelZaakDocumenten staat aan, maar aanvraagZaakUrl is leeg; zonder zaak-URL kunnen geen documenten worden opgehaald",
-                )
+            if (koppelZaakDocumenten == true) {
+                val url = requireNotNull(zaakUrl) {
+                    "koppelZaakDocumenten staat aan, maar aanvraagZaakUrl is leeg; zonder zaak-URL kunnen geen documenten worden opgehaald"
+                }
+                fetchZaakDocumentUrls(execution, url)
+            } else {
+                null
             }
 
         val resultaat =
@@ -183,7 +187,7 @@ class OpenProductPlugin(
                                 bsn = eigenaarBsn,
                             ),
                         ),
-                    gepubliceerd = gepubliceerd as Boolean?,
+                    gepubliceerd = gepubliceerd,
                     aanvraagZaakUrn = zaakUrn,
                     aanvraagZaakUrl = zaakUrl,
                     prijs = productPrijs,
@@ -216,7 +220,7 @@ class OpenProductPlugin(
         @PluginActionProperty productFrequentie: String,
         @PluginActionProperty productStatus: String,
         @PluginActionProperty dataobjectVariabelNaam: String?,
-        @PluginActionProperty koppelZaakDocumenten: java.lang.Boolean?,
+        @PluginActionProperty koppelZaakDocumenten: Boolean?,
         @PluginActionProperty documentenVariabelNaam: String?,
     ) {
         val freqEnum = toFreqEnum(productFrequentie)
@@ -245,7 +249,7 @@ class OpenProductPlugin(
                                 bsn = eigenaarBsn,
                             ),
                         ),
-                    gepubliceerd = gepubliceerd as Boolean?,
+                    gepubliceerd = gepubliceerd,
                     aanvraagZaakUrn = aanvraagZaakUrn,
                     aanvraagZaakUrl = aanvraagZaakUrl,
                     prijs = productPrijs,
