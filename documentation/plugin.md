@@ -280,7 +280,7 @@ only available to users with the `ROLE_ADMIN` role.
 
 ```kotlin
 dependencies {
-    implementation("com.ritense.valtimoplugins:open-product:1.4.0")
+    implementation("com.ritense.valtimoplugins:open-product:1.4.1")
     implementation("com.ritense.valtimoplugins:token-authentication:0.9")
 }
 ```
@@ -290,7 +290,7 @@ dependencies {
 ```json
 {
   "dependencies": {
-    "@valtimo-plugins/open-product": "1.4.0"
+    "@valtimo-plugins/open-product": "1.4.1"
   }
 }
 ```
