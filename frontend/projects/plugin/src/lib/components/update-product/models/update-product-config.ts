@@ -10,6 +10,8 @@ interface UpdateProductConfig {
     productFrequentie: string;
     productStatus: string;
     dataobjectVariabelNaam?: string;
+    koppelZaakDocumenten?: boolean;
+    documentenVariabelNaam?: string;
 }
 
 export {UpdateProductConfig};

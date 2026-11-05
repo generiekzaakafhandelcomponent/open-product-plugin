@@ -204,7 +204,7 @@ Creates a product and stores its UUID in the process variable `aangemaaktProduct
 | The name of the product | The product's name |
 | The UUID of the product type | The UUID of the product type in Open Producten |
 | The citizen service number (BSN) of the owner | The owner's BSN |
-| The URN of the application zaak, The URL of the zaak | The zaak of the request the product came from |
+| The URN of the application zaak, The URL of the zaak | The zaak of the request the product came from. Fill in at least one. Open Producten fills in the other from its URN mapping (`URN_MAPPING_CONFIG`). When you fill in both, they must match that mapping. Linking the zaak documents needs the URL |
 | The price of the product | The product's price |
 | The payment frequency | `eenmalig`, `maandelijks` or `jaarlijks` |
 | The product's status | `initieel`, `gereed`, `actief`, `ingetrokken`, `geweigerd` or `verlopen` |
@@ -280,7 +280,7 @@ only available to users with the `ROLE_ADMIN` role.
 
 ```kotlin
 dependencies {
-    implementation("com.ritense.valtimoplugins:open-product:1.4.0")
+    implementation("com.ritense.valtimoplugins:open-product:1.4.1")
     implementation("com.ritense.valtimoplugins:token-authentication:0.9")
 }
 ```
@@ -290,7 +290,7 @@ dependencies {
 ```json
 {
   "dependencies": {
-    "@valtimo-plugins/open-product": "1.4.0"
+    "@valtimo-plugins/open-product": "1.4.1"
   }
 }
 ```

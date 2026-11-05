@@ -86,9 +86,9 @@ data class Product(
     @JsonProperty("status")
     val status: StatusEnum,
     @JsonProperty("prijs")
-    val prijs: String,
+    val prijs: String?,
     @JsonProperty("frequentie")
-    val frequentie: FrequentieEnum,
+    val frequentie: FrequentieEnum?,
     @JsonProperty("verbruiksobject")
     val verbruiksobject: Map<String, Any>?,
     @JsonProperty("dataobject")

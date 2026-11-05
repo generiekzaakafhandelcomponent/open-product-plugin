@@ -38,7 +38,7 @@
             [margin]="true"
             [defaultValue]="obs.prefill?.aanvraagZaakUrn"
             [disabled]="obs.disabled"
-            [required]="true"
+            [required]="false"
     >
     </v-input>
     <v-input
@@ -77,15 +77,14 @@
             [required]="true"
     >
     </v-input>
-    <v-input
+    <v-select
             name="gepubliceerd"
+            [items]="jaNeeSelectItems$ | async"
             [title]="'gepubliceerd' | pluginTranslate: pluginId | async"
             [margin]="true"
-            [defaultValue]="obs.prefill?.gepubliceerd.toString()"
+            [defaultSelectionId]="gepubliceerdSelectionId(obs.prefill)"
             [disabled]="obs.disabled"
-            [required]="true"
-    >
-    </v-input>
+    ></v-select>
     <v-input
             name="dataobjectVariabelNaam"
             [title]="'dataobjectVariabelNaam' | pluginTranslate: pluginId | async"
@@ -94,4 +93,13 @@
             [disabled]="obs.disabled"
     >
     </v-input>
+    <v-select
+            name="koppelZaakDocumenten"
+            [items]="jaNeeSelectItems$ | async"
+            [title]="'koppelZaakDocumenten' | pluginTranslate: pluginId | async"
+            [tooltip]="'koppelZaakDocumentenTooltip' | pluginTranslate: pluginId | async"
+            [margin]="true"
+            [defaultSelectionId]="koppelZaakDocumentenSelectionId(obs.prefill)"
+            [disabled]="obs.disabled"
+    ></v-select>
 </v-form>

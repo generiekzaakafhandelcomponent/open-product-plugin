@@ -322,17 +322,51 @@ class CreateOrUpdateProductIT : BaseIntegrationTest() {
                     "productPrijs" to "10.00",
                     "productStatus" to "initieel",
                     "productFrequentie" to "eenmalig",
+                    "gepubliceerd" to true,
                 ),
                 mapOf("zaakUrn" to "urn:nld:gemeente:zaak:1"),
             )
 
         val body = body(takeRequests().single())
         assertThat(body["naam"].asText()).isEqualTo("Vergunning")
+        assertThat(body["prijs"].asText()).isEqualTo("10.00")
         assertThat(body["frequentie"].asText()).isEqualTo("eenmalig")
+        assertThat(body["gepubliceerd"].asBoolean()).isTrue()
         assertThat(body["status"].asText()).isEqualTo("initieel")
         assertThat(body["eigenaren"].toString()).isEqualTo("""[{"bsn":"$BSN"}]""")
         assertThat(runtimeService.getVariable(process.id, "aangemaaktProductUuid")).isEqualTo(NEW_UUID)
     }
+
+    @Test
+    fun `should fail before calling Open Producten when the price of the create-product action is empty`() {
+        val exception = assertThrows<Exception> { startCreateProduct("productPrijs" to "") }
+
+        assertThat(messages(exception)).contains("De prijs van het product is leeg")
+        assertThat(server.requestCount).isZero()
+    }
+
+    @Test
+    fun `should fail before calling Open Producten when the frequency of the create-product action is empty`() {
+        val exception = assertThrows<Exception> { startCreateProduct("productFrequentie" to "") }
+
+        assertThat(messages(exception)).contains("De frequentie van het product is leeg")
+        assertThat(server.requestCount).isZero()
+    }
+
+    private fun startCreateProduct(vararg overrides: Pair<String, Any?>): ProcessInstance =
+        startProcess(
+            "create-product",
+            mapOf(
+                "productNaam" to "Vergunning",
+                "productTypeUuid" to PRODUCTTYPE_UUID,
+                "eigenaarBsn" to BSN,
+                "aanvraagZaakUrl" to "https://zaken.example/zaken/1",
+                "productPrijs" to "10.00",
+                "productStatus" to "initieel",
+                "productFrequentie" to "eenmalig",
+            ) + overrides,
+            emptyMap(),
+        )
 
     private fun startCreateOrUpdate(
         actionProperties: Map<String, Any?>,

@@ -2,13 +2,14 @@ interface CreateProductConfig {
     productNaam: string;
     productTypeUuid: string;
     eigenaarBsn: string;
-    aanvraagZaakUrn: string;
+    aanvraagZaakUrn?: string;
     aanvraagZaakUrl: string;
     gepubliceerd: boolean;
     productPrijs: string;
     productFrequentie: string;
     productStatus: string;
     dataobjectVariabelNaam?: string;
+    koppelZaakDocumenten?: boolean;
 }
 
 export {CreateProductConfig};

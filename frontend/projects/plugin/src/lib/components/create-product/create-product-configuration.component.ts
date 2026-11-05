@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import {FunctionConfigurationComponent} from "@valtimo/plugin";
+import {FunctionConfigurationComponent, PluginTranslationService} from "@valtimo/plugin";
 import {BehaviorSubject, combineLatest, Observable, Subscription, take} from 'rxjs';
+import {fromJaNeeSelectionId, jaNeeSelectItems$, toJaNeeSelectionId} from '../../models';
 import {CreateProductConfig} from './models/create-product-config';
 
 @Component({
@@ -25,8 +26,21 @@ export class CreateProductConfigurationComponent
     private readonly formValue$ = new BehaviorSubject<CreateProductConfig | null>(null);
     private readonly valid$ = new BehaviorSubject<boolean>(false);
 
+    jaNeeSelectItems$!: Observable<Array<{id: string; text: string}>>;
+
+    constructor(private readonly pluginTranslationService: PluginTranslationService) {}
+
     ngOnInit(): void {
+        this.jaNeeSelectItems$ = jaNeeSelectItems$(this.pluginTranslationService, this.pluginId);
         this.openSaveSubscription();
+    }
+
+    gepubliceerdSelectionId(prefill: CreateProductConfig | null): string {
+        return toJaNeeSelectionId(prefill?.gepubliceerd);
+    }
+
+    koppelZaakDocumentenSelectionId(prefill: CreateProductConfig | null): string {
+        return toJaNeeSelectionId(prefill?.koppelZaakDocumenten);
     }
 
     ngOnDestroy() {
@@ -40,7 +54,14 @@ export class CreateProductConfigurationComponent
     }
 
     private handleValid(formValue: CreateProductConfig): void {
-        const valid = !!(formValue.productTypeUuid && formValue.eigenaarBsn && formValue.productPrijs && formValue.productStatus && formValue.aanvraagZaakUrn);
+        const valid = !!(
+            formValue.productTypeUuid &&
+            formValue.eigenaarBsn &&
+            formValue.productStatus &&
+            formValue.aanvraagZaakUrl &&
+            formValue.productPrijs &&
+            formValue.productFrequentie
+        );
 
         this.valid$.next(valid);
         this.valid.emit(valid);
@@ -52,7 +73,11 @@ export class CreateProductConfigurationComponent
                 .pipe(take(1))
                 .subscribe(([formValue, valid]) => {
                     if (valid) {
-                        this.configuration.emit(formValue);
+                        this.configuration.emit({
+                            ...formValue,
+                            gepubliceerd: fromJaNeeSelectionId(formValue.gepubliceerd),
+                            koppelZaakDocumenten: fromJaNeeSelectionId(formValue.koppelZaakDocumenten),
+                        });
                     }
                 });
         });

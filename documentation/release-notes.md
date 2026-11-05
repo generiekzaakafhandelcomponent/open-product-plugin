@@ -2,6 +2,10 @@
 
 Overzicht van wijzigingen per versie van de Open Product-plugin.
 
+## 1.4.1
+
+Actie 'Product aanmaken': de aanvraagzaak-URN en -URL zijn niet meer allebei verplicht; één van de twee is genoeg, want Open Producten vult de andere aan via zijn URN-mapping. Prijs en frequentie zijn verplicht en worden gecontroleerd voordat Open Producten wordt aangeroepen. 'Gepubliceerd' en 'Zaakdocumenten koppelen' kies je nu met een ja/nee-keuzelijst. Actie 'Product bijwerken': nieuwe velden om zaakdocumenten te koppelen en om een procesvariabele met documenten op te geven. Een product zonder prijs of frequentie (Open Producten geeft dan een lege waarde terug) wordt nu correct ingelezen.
+
 ## 1.4.0
 
 Nieuwe actie 'Product aanmaken of bijwerken': maakt het product van de eigenaar aan als die er nog geen van dat producttype heeft en werkt het anders bij, met per veld (ook de velden uit het dataobject-schema van het producttype) de keuze tussen een vaste waarde of een procesvariabele. Mislukt een aanroep naar Open Producten, dan staat in de foutmelding van het proces welke handeling mislukte en wat Open Producten terugmeldde.

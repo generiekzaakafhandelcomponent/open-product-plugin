@@ -140,23 +140,36 @@ class OpenProductPlugin(
         @PluginActionProperty productNaam: String,
         @PluginActionProperty productTypeUuid: String,
         @PluginActionProperty eigenaarBsn: String,
-        @PluginActionProperty aanvraagZaakUrn: String,
-        @PluginActionProperty aanvraagZaakUrl: String,
+        @PluginActionProperty aanvraagZaakUrn: String?,
+        @PluginActionProperty aanvraagZaakUrl: String?,
         @PluginActionProperty productPrijs: String,
         @PluginActionProperty productStatus: String,
         @PluginActionProperty productFrequentie: String,
-        @PluginActionProperty gepubliceerd: java.lang.Boolean?,
+        @PluginActionProperty gepubliceerd: Boolean?,
         @PluginActionProperty dataobjectVariabelNaam: String?,
-        @PluginActionProperty koppelZaakDocumenten: java.lang.Boolean?,
+        @PluginActionProperty koppelZaakDocumenten: Boolean?,
     ) {
+        require(productPrijs.isNotBlank()) { "De prijs van het product is leeg" }
+        require(productFrequentie.isNotBlank()) { "De frequentie van het product is leeg" }
         val freqEnum = toFreqEnum(productFrequentie)
         val statusEnum = toStatusEnum(productStatus)
 
         val dataobjectMap = resolveDataobjectMap(execution, dataobjectVariabelNaam)
 
+        // Open Producten fills in the missing URN or URL itself via its URN_MAPPING_CONFIG,
+        // so either one is enough. Blank values are left out so they don't fail validation.
+        val zaakUrn = aanvraagZaakUrn?.takeIf { it.isNotBlank() }
+        val zaakUrl = aanvraagZaakUrl?.takeIf { it.isNotBlank() }
+        require(zaakUrn != null || zaakUrl != null) {
+            "Either aanvraagZaakUrn or aanvraagZaakUrl must be set"
+        }
+
         val documentenList =
             if (koppelZaakDocumenten == true) {
-                fetchZaakDocumentUrls(execution, aanvraagZaakUrl)
+                val url = requireNotNull(zaakUrl) {
+                    "koppelZaakDocumenten staat aan, maar aanvraagZaakUrl is leeg; zonder zaak-URL kunnen geen documenten worden opgehaald"
+                }
+                fetchZaakDocumentUrls(execution, url)
             } else {
                 null
             }
@@ -174,9 +187,9 @@ class OpenProductPlugin(
                                 bsn = eigenaarBsn,
                             ),
                         ),
-                    gepubliceerd = gepubliceerd as Boolean?,
-                    aanvraagZaakUrn = aanvraagZaakUrn,
-                    aanvraagZaakUrl = aanvraagZaakUrl,
+                    gepubliceerd = gepubliceerd,
+                    aanvraagZaakUrn = zaakUrn,
+                    aanvraagZaakUrl = zaakUrl,
                     prijs = productPrijs,
                     frequentie = freqEnum,
                     status = statusEnum,
@@ -207,7 +220,7 @@ class OpenProductPlugin(
         @PluginActionProperty productFrequentie: String,
         @PluginActionProperty productStatus: String,
         @PluginActionProperty dataobjectVariabelNaam: String?,
-        @PluginActionProperty koppelZaakDocumenten: java.lang.Boolean?,
+        @PluginActionProperty koppelZaakDocumenten: Boolean?,
         @PluginActionProperty documentenVariabelNaam: String?,
     ) {
         val freqEnum = toFreqEnum(productFrequentie)
@@ -236,7 +249,7 @@ class OpenProductPlugin(
                                 bsn = eigenaarBsn,
                             ),
                         ),
-                    gepubliceerd = gepubliceerd as Boolean?,
+                    gepubliceerd = gepubliceerd,
                     aanvraagZaakUrn = aanvraagZaakUrn,
                     aanvraagZaakUrl = aanvraagZaakUrl,
                     prijs = productPrijs,
