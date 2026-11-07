@@ -161,7 +161,7 @@ Desktop.ini
 **/node_modules/**
 **/dist/**
 **/*.d.ts
-/.env.properties
+/properties.env
 dist
 out-tsc
 backend/.idea/

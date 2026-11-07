@@ -23,7 +23,8 @@
       "properties": {
         "targetKey": "pv:eigenaarBsn"
       },
-      "applyMaskOn": "change"
+      "applyMaskOn": "change",
+      "defaultValue": "022264541"
     },
     {
       "key": "submit",

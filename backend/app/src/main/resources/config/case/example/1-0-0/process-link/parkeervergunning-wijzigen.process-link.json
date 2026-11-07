@@ -13,6 +13,7 @@
         "pluginActionDefinitionKey": "get-all-products",
         "actionProperties": {
             "producttypeUuid": "9903945d-b639-49da-85ed-7305817f47ad",
+            "eigenaarBsn": "pv:eigenaarBsn",
             "resultaatVariabelNaam": "alleProducten"
         }
     },
@@ -39,7 +40,8 @@
             "productPrijs": "pv:productPrijs",
             "productFrequentie": "pv:productFrequentie",
             "productStatus": "pv:productStatus",
-            "dataobjectVariabelNaam": "bijgewerktDataobject"
+            "dataobjectVariabelNaam": "bijgewerktDataobject",
+            "zaken": "pv:zaken"
         }
     }
 ]

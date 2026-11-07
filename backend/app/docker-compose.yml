@@ -2,7 +2,7 @@ name: open-product-plugin
 
 services:
   plugin-keycloak:
-    container_name: plugin-docker-compose-plugin-keycloak
+    container_name: open-product-plugin-keycloak
     depends_on:
       - plugin-keycloak-database
     image: quay.io/keycloak/keycloak:26.2.2
@@ -35,7 +35,7 @@ services:
 
   plugin-keycloak-database:
     image: postgres:17.4
-    container_name: plugin-docker-compose-plugin-keycloak-database
+    container_name: open-product-plugin-keycloak-database
     ports:
       - "54329:5432"
     environment:
@@ -43,7 +43,7 @@ services:
       POSTGRES_PASSWORD: keycloak
 
   plugin-database:
-    container_name: plugin-docker-compose-plugin-database
+    container_name: open-product-plugin-database
     image: postgres:17.4
     ports:
       - "54320:5432"
@@ -56,7 +56,7 @@ services:
 
   plugin-rabbitmq:
     image: rabbitmq:4.1.0-management
-    container_name: plugin-docker-compose-plugin-rabbitmq
+    container_name: open-product-plugin-rabbitmq
     volumes:
       - ./imports/plugin-rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
       - ./imports/plugin-rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
@@ -74,7 +74,7 @@ services:
   # ZGW
 
   openzaak:
-    image: openzaak/open-zaak:1.20.0
+    image: openzaak/open-zaak:1.25.0
     container_name: plugin-docker-compose-openzaak
     platform: linux/amd64
     profiles:
@@ -102,6 +102,38 @@ services:
     depends_on:
       - openzaak-database
       - openzaak-redis
+    volumes:
+      - ./imports/open-zaak/dump_demodata.sh:/app/dump_demodata.sh
+      - ./imports/open-zaak/fixtures:/app/demodata
+    healthcheck:
+      test: [ "CMD", "python", "-c", "import requests; exit(requests.head('http://localhost:8000/admin/').status_code not in [200, 302])" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  openzaak-import:
+    profiles:
+      - zgw
+      - openzaak
+    depends_on:
+      openzaak:
+        condition: service_healthy
+    image: openzaak/open-zaak:1.25.0
+    platform: linux/amd64
+    environment:
+      - DB_HOST=openzaak-database
+      - DB_POST=5433
+      - SECRET_KEY=veryRestrictedSecretKey
+      - DB_USER=openzaak
+      - DB_PASSWORD=openzaak
+      - DB_NAME=openzaak
+      - CACHE_DEFAULT=openzaak-redis:6379/0
+      - CACHE_AXES=openzaak-redis:6379/0
+    command: sh /app/load_demodata.sh
+    volumes:
+      - ./imports/open-zaak/fixtures:/app/demodata
+      - ./imports/open-zaak/load_demodata.sh:/app/load_demodata.sh
 
   openzaak-database:
     image: postgis/postgis:17-3.4
@@ -116,8 +148,6 @@ services:
       - POSTGRES_DB=openzaak
     ports:
       - "5433:5432"
-    volumes:
-      - ./imports/open-zaak:/docker-entrypoint-initdb.d
 
   openzaak-redis:
     image: redis:7.4.3
@@ -301,6 +331,9 @@ services:
       - "8020:8000"
     depends_on:
       - open-product-database
+    volumes:
+      - ./imports/open-product/dump_demodata.sh:/app/dump_demodata.sh
+      - ./imports/open-product/fixtures:/app/demodata
     environment: &openproduct-env
         DJANGO_SETTINGS_MODULE: openproduct.conf.docker
         SECRET_KEY: ${SECRET_KEY:-django-insecure-@4wj9(+*bu7*v&%on7+e_8!d1ckl%r=6+sz#d2!pw^@lb0+=}
@@ -345,9 +378,10 @@ services:
       - zgw
       - product
     environment: *openproduct-env
-    command: sh init/init.sh
+    command: sh /app/load_demodata.sh
     volumes:
-      - ./imports/open-product/init:/app/init
+      - ./imports/open-product/fixtures:/app/demodata
+      - ./imports/open-product/load_demodata.sh:/app/load_demodata.sh
     depends_on:
       open-product:
         condition: service_healthy
