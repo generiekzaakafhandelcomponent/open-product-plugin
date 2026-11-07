@@ -16,6 +16,7 @@
 
 package com.ritense.openproduct.plugin
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.ritense.openproduct.client.DataBindingConfig
 import com.ritense.openproduct.client.DocumentRequest
 import com.ritense.openproduct.client.EigenaarRequest
@@ -26,6 +27,7 @@ import com.ritense.openproduct.client.ProductRequest
 import com.ritense.openproduct.client.ProducttypeDetails
 import com.ritense.openproduct.client.ProducttypeSchema
 import com.ritense.openproduct.client.StatusEnum
+import com.ritense.openproduct.client.ZaakRequest
 import com.ritense.plugin.annotation.Plugin
 import com.ritense.plugin.annotation.PluginAction
 import com.ritense.plugin.annotation.PluginActionProperty
@@ -126,6 +128,9 @@ class OpenProductPlugin(
             result?.joinToString("\n") { "- ${it.naam ?: "(geen naam)"} | UUID: ${it.uuid} | Status: ${it.status}" }
                 ?: "(geen producten gevonden)",
         )
+        // Form prefill resolves process variables via Camunda/Operaton's own variable deserialization, which isn't
+        // guaranteed for a list of plain Kotlin objects. A JSON string is a variable type every form can read reliably.
+        execution.setVariable("${variabelNaam}Json", jacksonObjectMapper().writeValueAsString(result.orEmpty()))
         execution.setVariable("resultaatPV", "Producten opgehaald: ${result?.size ?: 0}")
     }
 
@@ -148,6 +153,7 @@ class OpenProductPlugin(
         @PluginActionProperty gepubliceerd: Boolean?,
         @PluginActionProperty dataobjectVariabelNaam: String?,
         @PluginActionProperty koppelZaakDocumenten: Boolean?,
+        @PluginActionProperty zaken: List<ZaakRequest>?,
     ) {
         require(productPrijs.isNotBlank()) { "De prijs van het product is leeg" }
         require(productFrequentie.isNotBlank()) { "De frequentie van het product is leeg" }
@@ -195,10 +201,14 @@ class OpenProductPlugin(
                     status = statusEnum,
                     dataobject = dataobjectMap,
                     documenten = documentenList,
+                    zaken = zaken,
                 ),
             )
         execution.setVariable("aangemaaktProductUuid", resultaat?.uuid?.toString())
         execution.setVariable("resultaatPV", "Product aangemaakt: $productNaam")
+        // Operaton's variable engine can't serialize a plain Kotlin object; a JSON string is a variable
+        // type every form/step can read reliably (same reasoning as getAllProducts' "...Json" variable).
+        execution.setVariable("productJson", jacksonObjectMapper().writeValueAsString(resultaat))
     }
 
     @PluginAction(
@@ -222,6 +232,7 @@ class OpenProductPlugin(
         @PluginActionProperty dataobjectVariabelNaam: String?,
         @PluginActionProperty koppelZaakDocumenten: Boolean?,
         @PluginActionProperty documentenVariabelNaam: String?,
+        @PluginActionProperty zaken: List<ZaakRequest>?,
     ) {
         val freqEnum = toFreqEnum(productFrequentie)
         val statusEnum = toStatusEnum(productStatus)
@@ -257,6 +268,7 @@ class OpenProductPlugin(
                     status = statusEnum,
                     dataobject = dataobjectMap,
                     documenten = documentenList,
+                    zaken = zaken,
                 ),
             )
 

@@ -45,6 +45,14 @@ data class ProductDetails(
     val dataobject: Map<String, Any?>? = null,
     @JsonProperty("documenten")
     val documenten: List<ProductDocument>? = null,
+    @JsonProperty("gepubliceerd")
+    val gepubliceerd: Boolean? = null,
+    @JsonProperty("eigenaren")
+    val eigenaren: List<ProductEigenaar>? = null,
+    @JsonProperty("aanvraag_zaak_urn")
+    val aanvraagZaakUrn: String? = null,
+    @JsonProperty("aanvraag_zaak_url")
+    val aanvraagZaakUrl: String? = null,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -53,4 +61,16 @@ data class ProductDocument(
     val url: String? = null,
     @JsonProperty("urn")
     val urn: String? = null,
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class ProductEigenaar(
+    @JsonProperty("bsn")
+    val bsn: String? = null,
+    @JsonProperty("kvk_nummer")
+    val kvkNummer: String? = null,
+    @JsonProperty("vestigingsnummer")
+    val vestigingsnummer: String? = null,
+    @JsonProperty("klantnummer")
+    val klantnummer: String? = null,
 )
