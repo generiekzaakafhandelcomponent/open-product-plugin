@@ -1,0 +1,298 @@
+{
+  "display": "form",
+  "components": [
+    {
+      "key": "html",
+      "type": "htmlelement",
+      "input": false,
+      "label": "Instructies",
+      "content": "<p>Het product is aangemaakt. Controleer de gegevens, koppel eventueel extra zaken en wijzig waar nodig; de gewijzigde gegevens worden hierna naar het product geschreven.</p>",
+      "tableView": false,
+      "refreshOnChange": false
+    },
+    {
+      "key": "productJson",
+      "type": "hidden",
+      "input": true,
+      "tableView": false,
+      "properties": {
+        "sourceKey": "pv:productJson"
+      }
+    },
+    {
+      "key": "productInfo",
+      "type": "textarea",
+      "input": true,
+      "label": "Productinformatie",
+      "disabled": true,
+      "tableView": false,
+      "attributes": {
+        "data-testid": "voeg-zaken-toe-productInfo"
+      },
+      "autoExpand": true,
+      "calculateValue": "var product = JSON.parse(data.productJson || '{}'); value = product.uuid ? ('UUID: ' + product.uuid + '\\nURL: ' + (product.url || '') + '\\nAangemaakt op: ' + (product.aanmaak_datum || '') + '\\nLaatst bijgewerkt op: ' + (product.update_datum || '')) : '';"
+    },
+    {
+      "key": "productNaam",
+      "type": "textfield",
+      "input": true,
+      "label": "Naam van het product",
+      "validate": {
+        "required": true
+      },
+      "tableView": true,
+      "attributes": {
+        "data-testid": "voeg-zaken-toe-productNaam"
+      },
+      "properties": {
+        "targetKey": "pv:productNaam"
+      },
+      "applyMaskOn": "change",
+      "calculateValue": "var product = JSON.parse(data.productJson || '{}'); value = product.naam || '';"
+    },
+    {
+      "key": "productTypeUuid",
+      "type": "hidden",
+      "input": true,
+      "tableView": false,
+      "properties": {
+        "targetKey": "pv:productTypeUuid"
+      },
+      "calculateValue": "var product = JSON.parse(data.productJson || '{}'); value = (product.producttype && product.producttype.uuid) || '';"
+    },
+    {
+      "key": "eigenaarBsn",
+      "type": "textfield",
+      "input": true,
+      "label": "BSN van de eigenaar",
+      "validate": {
+        "required": true
+      },
+      "tableView": true,
+      "attributes": {
+        "data-testid": "voeg-zaken-toe-eigenaarBsn"
+      },
+      "properties": {
+        "targetKey": "pv:eigenaarBsn"
+      },
+      "applyMaskOn": "change",
+      "calculateValue": "var product = JSON.parse(data.productJson || '{}'); var eigenaar = product.eigenaren && product.eigenaren[0]; value = (eigenaar && eigenaar.bsn) || '';"
+    },
+    {
+      "key": "productPrijs",
+      "type": "textfield",
+      "input": true,
+      "label": "Prijs",
+      "validate": {
+        "required": true
+      },
+      "tableView": true,
+      "attributes": {
+        "data-testid": "voeg-zaken-toe-productPrijs"
+      },
+      "properties": {
+        "targetKey": "pv:productPrijs"
+      },
+      "applyMaskOn": "change",
+      "calculateValue": "var product = JSON.parse(data.productJson || '{}'); value = product.prijs || '';"
+    },
+    {
+      "key": "productStatus",
+      "data": {
+        "values": [
+          {
+            "label": "Actief",
+            "value": "actief"
+          },
+          {
+            "label": "Verlopen",
+            "value": "verlopen"
+          }
+        ]
+      },
+      "type": "select",
+      "input": true,
+      "label": "Status",
+      "widget": "choicesjs",
+      "validate": {
+        "required": true
+      },
+      "tableView": true,
+      "attributes": {
+        "data-testid": "voeg-zaken-toe-productStatus"
+      },
+      "properties": {
+        "targetKey": "pv:productStatus"
+      },
+      "calculateValue": "var product = JSON.parse(data.productJson || '{}'); value = product.status || 'actief';"
+    },
+    {
+      "key": "productFrequentie",
+      "data": {
+        "values": [
+          {
+            "label": "Eenmalig",
+            "value": "eenmalig"
+          },
+          {
+            "label": "Maandelijks",
+            "value": "maandelijks"
+          },
+          {
+            "label": "Jaarlijks",
+            "value": "jaarlijks"
+          }
+        ]
+      },
+      "type": "select",
+      "input": true,
+      "label": "Betalingsfrequentie",
+      "widget": "choicesjs",
+      "validate": {
+        "required": true
+      },
+      "tableView": true,
+      "attributes": {
+        "data-testid": "voeg-zaken-toe-productFrequentie"
+      },
+      "properties": {
+        "targetKey": "pv:productFrequentie"
+      },
+      "calculateValue": "var product = JSON.parse(data.productJson || '{}'); value = product.frequentie || 'jaarlijks';"
+    },
+    {
+      "key": "gepubliceerd",
+      "type": "checkbox",
+      "input": true,
+      "label": "Gepubliceerd (zichtbaar voor publiek)",
+      "tableView": false,
+      "attributes": {
+        "data-testid": "voeg-zaken-toe-gepubliceerd"
+      },
+      "properties": {
+        "targetKey": "pv:gepubliceerd"
+      },
+      "calculateValue": "var product = JSON.parse(data.productJson || '{}'); value = product.uuid ? !!product.gepubliceerd : true;"
+    },
+    {
+      "key": "aanvraagZaakUrn",
+      "type": "textfield",
+      "input": true,
+      "label": "Aanvraag zaak URN (optioneel)",
+      "tableView": false,
+      "attributes": {
+        "data-testid": "voeg-zaken-toe-aanvraagZaakUrn"
+      },
+      "properties": {
+        "sourceKey": "pv:aanvraagZaakUrn",
+        "targetKey": "pv:aanvraagZaakUrn"
+      },
+      "applyMaskOn": "change"
+    },
+    {
+      "key": "aanvraagZaakUrl",
+      "type": "textfield",
+      "input": true,
+      "label": "Aanvraag zaak URL (optioneel)",
+      "tableView": false,
+      "attributes": {
+        "data-testid": "voeg-zaken-toe-aanvraagZaakUrl"
+      },
+      "properties": {
+        "sourceKey": "pv:aanvraagZaakUrl",
+        "targetKey": "pv:aanvraagZaakUrl"
+      },
+      "applyMaskOn": "change"
+    },
+    {
+      "key": "bijgewerktDataobject",
+      "type": "container",
+      "input": true,
+      "label": "Parkeervergunning gegevens",
+      "tableView": false,
+      "attributes": {
+        "data-testid": "voeg-zaken-toe-bijgewerktDataobject"
+      },
+      "components": [
+        {
+          "key": "kenteken",
+          "type": "textfield",
+          "input": true,
+          "label": "Kenteken",
+          "validate": {
+            "required": true
+          },
+          "tableView": true,
+          "attributes": {
+            "data-testid": "voeg-zaken-toe-kenteken"
+          },
+          "applyMaskOn": "change",
+          "calculateValue": "var product = JSON.parse(data.productJson || '{}'); value = (product.dataobject && product.dataobject.kenteken) || '';"
+        }
+      ],
+      "properties": {
+        "targetKey": "pv:bijgewerktDataobject"
+      }
+    },
+    {
+      "key": "zaken",
+      "type": "editgrid",
+      "input": true,
+      "label": "Gekoppelde zaken",
+      "tableView": false,
+      "attributes": {
+        "data-testid": "voeg-zaken-toe-zaken"
+      },
+      "properties": {
+        "sourceKey": "pv:zaken",
+        "targetKey": "pv:zaken"
+      },
+      "templates": {
+        "header": "<div class=\"row\"><div class=\"col-sm-6\">URN</div><div class=\"col-sm-6\">URL</div></div>",
+        "row": "<div class=\"row\"><div class=\"col-sm-6\">{{ row.urn }}</div><div class=\"col-sm-6\">{{ row.url }}</div></div>"
+      },
+      "addAnother": "Zaak toevoegen",
+      "saveRow": "Opslaan",
+      "removeRow": "Verwijderen",
+      "components": [
+        {
+          "key": "urn",
+          "type": "textfield",
+          "input": true,
+          "label": "URN",
+          "tableView": true,
+          "attributes": {
+            "data-testid": "voeg-zaken-toe-zaken-urn"
+          },
+          "validate": {
+            "pattern": "^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\\?\\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\\?)*)?(?:\\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\\?)*)?$",
+            "customMessage": "Geen geldige URN"
+          },
+          "applyMaskOn": "change"
+        },
+        {
+          "key": "url",
+          "type": "textfield",
+          "input": true,
+          "label": "URL",
+          "tableView": true,
+          "attributes": {
+            "data-testid": "voeg-zaken-toe-zaken-url"
+          },
+          "validate": {
+            "maxLength": 200
+          },
+          "applyMaskOn": "change"
+        }
+      ]
+    },
+    {
+      "key": "submit",
+      "type": "button",
+      "input": true,
+      "label": "Opslaan",
+      "tableView": false,
+      "disableOnInvalid": true
+    }
+  ]
+}
