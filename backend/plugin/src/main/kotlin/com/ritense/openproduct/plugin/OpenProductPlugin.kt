@@ -81,6 +81,7 @@ class OpenProductPlugin(
             execution.setVariable(it, LinkedHashMap(result?.dataobject ?: emptyMap()))
         }
         execution.setVariable("resultaatPV", "Product: $result")
+        execution.setVariable("product", result)
     }
 
     @PluginAction(
@@ -206,9 +207,8 @@ class OpenProductPlugin(
             )
         execution.setVariable("aangemaaktProductUuid", resultaat?.uuid?.toString())
         execution.setVariable("resultaatPV", "Product aangemaakt: $productNaam")
-        // Operaton's variable engine can't serialize a plain Kotlin object; a JSON string is a variable
-        // type every form/step can read reliably (same reasoning as getAllProducts' "...Json" variable).
         execution.setVariable("productJson", jacksonObjectMapper().writeValueAsString(resultaat))
+        execution.setVariable("product", resultaat)
     }
 
     @PluginAction(
@@ -271,7 +271,7 @@ class OpenProductPlugin(
                     zaken = zaken,
                 ),
             )
-
+        execution.setVariable("product", resultaat)
         execution.setVariable("resultaatPV", "Product gewijzigd met UUID: $productUuid")
     }
 

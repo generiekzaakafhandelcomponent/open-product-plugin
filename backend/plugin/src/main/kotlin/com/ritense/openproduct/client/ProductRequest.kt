@@ -69,7 +69,7 @@ data class ZaakRequest(
     val urn: String? = null,
     @JsonProperty("url")
     val url: String? = null,
-)
+) : Serializable
 
 data class Product(
     @JsonProperty("uuid")
@@ -106,7 +106,7 @@ data class Product(
     val dataobject: Map<String, Any>?,
     @JsonProperty("zaken")
     val zaken: List<ZaakRequest>?,
-)
+) : Serializable
 
 data class ProductType(
     @JsonProperty("uuid")

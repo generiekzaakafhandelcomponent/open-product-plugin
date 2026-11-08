@@ -1,47 +1,70 @@
 [
-    {
-        "key": "summary",
-        "widgets": [
-            {
-                "type": "fields",
-                "key": "process-variable-result",
-                "title": "Open Product plugin Result",
-                "width": 2,
-                "highContrast": true,
-                "properties": {
-                    "columns": [
-                        [
-                            {
-                                "key": "name",
-                                "title": "Name",
-                                "value": "doc:/name",
-                                "displayProperties": {
-                                    "type": "text",
-                                    "hideWhenEmpty": false
-                                }
-                            },
-                            {
-                                "key": "message",
-                                "title": "Message",
-                                "value": "doc:/message",
-                                "displayProperties": {
-                                    "type": "text",
-                                    "hideWhenEmpty": false
-                                }
-                            },
-                            {
-                                "key": "apiResult",
-                                "title": "API Result",
-                                "value": "doc:/apiResult",
-                                "displayProperties": {
-                                    "type": "text",
-                                    "hideWhenEmpty": false
-                                }
-                            }
-                        ]
-                    ]
+  {
+    "key": "summary",
+    "widgets": [
+      {
+        "type": "fields",
+        "key": "process-variable-result",
+        "title": "Open Product plugin Result",
+        "width": 1,
+        "highContrast": true,
+        "properties": {
+          "columns": [
+            [
+              {
+                "key": "Product naam:",
+                "title": "Name",
+                "value": "pv:product.naam",
+                "displayProperties": {
+                  "type": "text",
+                  "hideWhenEmpty": false
                 }
+              },
+              {
+                "key": "uuid",
+                "title": "UUID Product:",
+                "value": "pv:product.uuid",
+                "displayProperties": {
+                  "type": "text",
+                  "hideWhenEmpty": false
+                }
+              }
+            ]
+          ]
+        }
+      },
+      {
+        "type": "table",
+        "key": "product-zaken-table",
+        "title": "Zaken",
+        "width": 1,
+        "highContrast": true,
+        "properties": {
+          "collection": "pv:product.zaken",
+          "firstColumnAsTitle": false,
+          "defaultPageSize": 5,
+          "columns": [
+            {
+              "key": "zaak-url",
+              "title": "URL",
+              "value": "url",
+              "displayProperties": {
+                "type": "text",
+                "hideWhenEmpty": false
+              }
+            },
+            {
+              "key": "zaak-urn",
+              "title": "URN",
+              "value": "urn",
+              "displayProperties": {
+                "type": "text",
+                "hideWhenEmpty": false
+              }
             }
-        ]
-    }
+          ]
+        }
+      }
+    ]
+  }
 ]

@@ -26,6 +26,28 @@
     }
   },
   {
+    "activityId": "openproduct-get-product",
+    "activityType": "bpmn:ServiceTask:start",
+    "processLinkType": "plugin",
+    "pluginConfigurationId": "4ac9a49f-4aeb-4f91-86d9-853fd95a1b33",
+    "pluginActionDefinitionKey": "get-product",
+    "actionProperties": {
+      "productUuid": "pv:aangemaaktProductUuid"
+    }
+  },
+  {
+    "activityId": "showcase-afronden",
+    "activityType": "bpmn:UserTask:create",
+    "processLinkType": "form",
+    "formDefinitionName": "empty-form"
+  },
+  {
+    "activityId": "showcase-pauseren",
+    "activityType": "bpmn:UserTask:create",
+    "processLinkType": "form",
+    "formDefinitionName": "empty-form"
+  },
+  {
     "activityId": "voeg-zaken-toe",
     "activityType": "bpmn:UserTask:create",
     "processLinkType": "form",
