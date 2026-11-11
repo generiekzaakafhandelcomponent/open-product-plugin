@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_showcase" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.35.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_showcase" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.23.0">
   <bpmn:collaboration id="Collaboration_showcase">
     <bpmn:participant id="showcase-participant" name="Open Product Showcase" processRef="open-product-showcase" />
   </bpmn:collaboration>
@@ -11,21 +11,41 @@
       <bpmn:incoming>Flow_showcase_1</bpmn:incoming>
       <bpmn:outgoing>Flow_showcase_2</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_showcase_1" sourceRef="showcase-start-event" targetRef="openproduct-create-product" />
+    <bpmn:sequenceFlow id="Flow_showcase_2" sourceRef="openproduct-create-product" targetRef="voeg-zaken-toe" />
+    <bpmn:sequenceFlow id="Flow_showcase_3" sourceRef="openproduct-update-product" targetRef="showcase-pauseren" />
     <bpmn:serviceTask id="openproduct-update-product" name="Wijzig product">
-      <bpmn:incoming>Flow_showcase_2</bpmn:incoming>
+      <bpmn:incoming>Flow_0uu5oz5</bpmn:incoming>
       <bpmn:outgoing>Flow_showcase_3</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0uu5oz5" sourceRef="voeg-zaken-toe" targetRef="openproduct-update-product" />
+    <bpmn:userTask id="voeg-zaken-toe" name="voeg zaken toe">
+      <bpmn:incoming>Flow_showcase_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_0uu5oz5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0eyhkci" sourceRef="showcase-pauseren" targetRef="openproduct-get-product" />
     <bpmn:endEvent id="showcase-end-event" name="Proces beeindigd">
-      <bpmn:incoming>Flow_showcase_3</bpmn:incoming>
+      <bpmn:incoming>Flow_0n6h72j</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_showcase_1" sourceRef="showcase-start-event" targetRef="openproduct-create-product" />
-    <bpmn:sequenceFlow id="Flow_showcase_2" sourceRef="openproduct-create-product" targetRef="openproduct-update-product" />
-    <bpmn:sequenceFlow id="Flow_showcase_3" sourceRef="openproduct-update-product" targetRef="showcase-end-event" />
+    <bpmn:userTask id="showcase-afronden" name="afronden">
+      <bpmn:incoming>Flow_0htomw3</bpmn:incoming>
+      <bpmn:outgoing>Flow_0n6h72j</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0n6h72j" sourceRef="showcase-afronden" targetRef="showcase-end-event" />
+    <bpmn:sequenceFlow id="Flow_0htomw3" sourceRef="openproduct-get-product" targetRef="showcase-afronden" />
+    <bpmn:userTask id="showcase-pauseren" name="pause">
+      <bpmn:incoming>Flow_showcase_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_0eyhkci</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="openproduct-get-product" name="get product">
+      <bpmn:incoming>Flow_0eyhkci</bpmn:incoming>
+      <bpmn:outgoing>Flow_0htomw3</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_showcase">
     <bpmndi:BPMNPlane id="BPMNPlane_showcase" bpmnElement="Collaboration_showcase">
       <bpmndi:BPMNShape id="Participant_showcase_di" bpmnElement="showcase-participant" isHorizontal="true">
-        <dc:Bounds x="160" y="100" width="750" height="200" />
+        <dc:Bounds x="160" y="100" width="1210" height="200" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="StartEvent_showcase_di" bpmnElement="showcase-start-event">
@@ -38,13 +58,28 @@
         <dc:Bounds x="340" y="160" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ServiceTask_update_di" bpmnElement="openproduct-update-product">
-        <dc:Bounds x="520" y="160" width="100" height="80" />
+        <dc:Bounds x="670" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_15v8513_di" bpmnElement="voeg-zaken-toe">
+        <dc:Bounds x="500" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_showcase_di" bpmnElement="showcase-end-event">
-        <dc:Bounds x="712" y="182" width="36" height="36" />
+        <dc:Bounds x="1242" y="182" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="688" y="225" width="85" height="14" />
+          <dc:Bounds x="1218" y="225" width="86" height="14" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0fyw8vz" bpmnElement="showcase-afronden">
+        <dc:Bounds x="1110" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0a7imo2_di" bpmnElement="showcase-pauseren">
+        <dc:Bounds x="820" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0wqvd92" bpmnElement="openproduct-get-product">
+        <dc:Bounds x="970" y="160" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_showcase_1_di" bpmnElement="Flow_showcase_1">
         <di:waypoint x="268" y="200" />
@@ -52,11 +87,27 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_showcase_2_di" bpmnElement="Flow_showcase_2">
         <di:waypoint x="440" y="200" />
-        <di:waypoint x="520" y="200" />
+        <di:waypoint x="500" y="200" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_showcase_3_di" bpmnElement="Flow_showcase_3">
-        <di:waypoint x="620" y="200" />
-        <di:waypoint x="712" y="200" />
+        <di:waypoint x="770" y="200" />
+        <di:waypoint x="820" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0uu5oz5_di" bpmnElement="Flow_0uu5oz5">
+        <di:waypoint x="600" y="200" />
+        <di:waypoint x="670" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0eyhkci_di" bpmnElement="Flow_0eyhkci">
+        <di:waypoint x="920" y="200" />
+        <di:waypoint x="970" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0n6h72j_di" bpmnElement="Flow_0n6h72j">
+        <di:waypoint x="1210" y="200" />
+        <di:waypoint x="1242" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0htomw3_di" bpmnElement="Flow_0htomw3">
+        <di:waypoint x="1070" y="200" />
+        <di:waypoint x="1110" y="200" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

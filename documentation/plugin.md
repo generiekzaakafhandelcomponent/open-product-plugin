@@ -214,8 +214,10 @@ Creates a product and stores its UUID in the process variable `aangemaaktProduct
 ### Update product via UUID
 
 Updates the product with the given UUID. It has the same properties as **New product**, plus **The UUID of the
-product**. Both actions also accept `koppelZaakDocumenten` (attach the zaak's documents), and this one
-`documentenVariabelNaam` (a process variable holding the documents); these are set in a process link file only.
+product**. Both actions also accept `koppelZaakDocumenten` (attach the zaak's documents) and `zaken` (a list of
+`{"urn": ..., "url": ...}` entries linking zaken to the product, either one of `urn`/`url` may be left empty), and this
+one additionally `documentenVariabelNaam` (a process variable holding the documents). None of these are exposed in the
+plugin configuration UI; they are set in a process link file only.
 
 ### Retrieve product via UUID
 

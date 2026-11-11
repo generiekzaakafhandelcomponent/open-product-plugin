@@ -216,6 +216,57 @@
       }
     },
     {
+      "key": "zaken",
+      "type": "editgrid",
+      "input": true,
+      "label": "Gekoppelde zaken",
+      "tableView": false,
+      "attributes": {
+        "data-testid": "open-product-showcase-start-zaken"
+      },
+      "properties": {
+        "targetKey": "pv:zaken"
+      },
+      "templates": {
+        "header": "<div class=\"row\"><div class=\"col-sm-6\">URN</div><div class=\"col-sm-6\">URL</div></div>",
+        "row": "<div class=\"row\"><div class=\"col-sm-6\">{{ row.urn }}</div><div class=\"col-sm-6\">{{ row.url }}</div></div>"
+      },
+      "addAnother": "Zaak toevoegen",
+      "saveRow": "Opslaan",
+      "removeRow": "Verwijderen",
+      "components": [
+        {
+          "key": "urn",
+          "type": "textfield",
+          "input": true,
+          "label": "URN",
+          "tableView": true,
+          "attributes": {
+            "data-testid": "open-product-showcase-start-zaken-urn"
+          },
+          "validate": {
+            "pattern": "^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\\?\\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\\?)*)?(?:\\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\\?)*)?$",
+            "customMessage": "Geen geldige URN"
+          },
+          "applyMaskOn": "change"
+        },
+        {
+          "key": "url",
+          "type": "textfield",
+          "input": true,
+          "label": "URL",
+          "tableView": true,
+          "attributes": {
+            "data-testid": "open-product-showcase-start-zaken-url"
+          },
+          "validate": {
+            "maxLength": 200
+          },
+          "applyMaskOn": "change"
+        }
+      ]
+    },
+    {
       "key": "submit",
       "type": "button",
       "input": true,

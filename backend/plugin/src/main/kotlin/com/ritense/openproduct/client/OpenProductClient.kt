@@ -106,7 +106,7 @@ class OpenProductClient {
         baseUrl: String,
         authenticationPlugin: TokenAuthenticationPlugin,
         request: ProductRequest,
-    ): String? {
+    ): Product? {
         val restClient = getRestclient(baseUrl, authenticationPlugin)
         val objectMapper = jacksonObjectMapper()
         val requestJson = objectMapper.writeValueAsString(request)
@@ -119,7 +119,7 @@ class OpenProductClient {
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .body(requestJson)
                     .retrieve()
-                    .toEntity(String::class.java)
+                    .toEntity(Product::class.java)
             }
 
         return result.body

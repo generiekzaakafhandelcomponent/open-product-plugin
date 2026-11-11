@@ -25,6 +25,8 @@ data class ProductRequest(
     val eigenaren: List<EigenaarRequest>,
     @JsonProperty("documenten")
     val documenten: List<DocumentRequest>? = null,
+    @JsonProperty("zaken")
+    val zaken: List<ZaakRequest>? = null,
     @JsonProperty("status")
     val status: StatusEnum? = null,
     @JsonProperty("aanvraag_zaak_urn")
@@ -60,6 +62,15 @@ data class DocumentRequest(
     val url: String,
 )
 
+// urn follows Open Producten's NestedZaakRequest.urn pattern: urn:<nid>:<nss>; url is NestedZaakRequest.url, maxLength 200.
+@JsonInclude(JsonInclude.Include.NON_NULL)
+data class ZaakRequest(
+    @JsonProperty("urn")
+    val urn: String? = null,
+    @JsonProperty("url")
+    val url: String? = null,
+) : Serializable
+
 data class Product(
     @JsonProperty("uuid")
     val uuid: UUID,
@@ -93,7 +104,9 @@ data class Product(
     val verbruiksobject: Map<String, Any>?,
     @JsonProperty("dataobject")
     val dataobject: Map<String, Any>?,
-)
+    @JsonProperty("zaken")
+    val zaken: List<ZaakRequest>?,
+) : Serializable
 
 data class ProductType(
     @JsonProperty("uuid")

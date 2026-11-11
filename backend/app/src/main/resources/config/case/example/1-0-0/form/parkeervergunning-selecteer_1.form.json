@@ -1,0 +1,284 @@
+{
+  "display": "form",
+  "components": [
+    {
+      "key": "html",
+      "type": "htmlelement",
+      "input": false,
+      "label": "Beschikbare parkeervergunningen",
+      "content": "<p>De volgende parkeervergunningen zijn opgehaald. Kies hieronder de vergunning die je wilt wijzigen; de overige velden worden automatisch ingevuld.</p><p><strong>Beschikbare vergunningen (naam | UUID | status):</strong></p>",
+      "tableView": false,
+      "refreshOnChange": false
+    },
+    {
+      "key": "alleProductenTekst",
+      "type": "textarea",
+      "input": true,
+      "label": "Beschikbare vergunningen",
+      "disabled": true,
+      "tableView": false,
+      "attributes": {
+        "data-testid": "parkeervergunning-selecteer-alleProductenTekst"
+      },
+      "properties": {
+        "sourceKey": "pv:alleProductenTekst"
+      },
+      "autoExpand": true
+    },
+    {
+      "key": "alleProductenJson",
+      "type": "hidden",
+      "input": true,
+      "tableView": false,
+      "properties": {
+        "sourceKey": "pv:alleProductenJson"
+      }
+    },
+    {
+      "key": "geselecteerdProductUuid",
+      "type": "select",
+      "input": true,
+      "label": "Te wijzigen parkeervergunning",
+      "widget": "choicesjs",
+      "validate": { "required": true },
+      "tableView": true,
+      "attributes": {
+        "data-testid": "parkeervergunning-selecteer-geselecteerdProductUuid"
+      },
+      "properties": {
+        "targetKey": "pv:geselecteerdProductUuid"
+      },
+      "dataSrc": "custom",
+      "data": {
+        "custom": "values = JSON.parse(data.alleProductenJson || '[]').map(function(p) { return { label: (p.naam || '(geen naam)') + ' | ' + p.uuid + ' | ' + (p.status || ''), value: p.uuid }; });"
+      },
+      "valueProperty": "value",
+      "refreshOn": "alleProductenJson",
+      "clearOnRefresh": false
+    },
+    {
+      "key": "productNaam",
+      "type": "textfield",
+      "input": true,
+      "label": "Naam van het product",
+      "validate": { "required": true },
+      "tableView": true,
+      "attributes": {
+        "data-testid": "parkeervergunning-selecteer-productNaam"
+      },
+      "properties": {
+        "targetKey": "pv:productNaam"
+      },
+      "applyMaskOn": "change",
+      "calculateValue": "var product = JSON.parse(data.alleProductenJson || '[]').filter(function(p) { return p && p.uuid === data.geselecteerdProductUuid; })[0]; value = (product && product.naam) || '';"
+    },
+    {
+      "key": "eigenaarBsn",
+      "type": "textfield",
+      "input": true,
+      "label": "BSN van de eigenaar",
+      "validate": { "required": true },
+      "tableView": true,
+      "attributes": {
+        "data-testid": "parkeervergunning-selecteer-eigenaarBsn"
+      },
+      "properties": {
+        "targetKey": "pv:eigenaarBsn"
+      },
+      "applyMaskOn": "change",
+      "calculateValue": "var product = JSON.parse(data.alleProductenJson || '[]').filter(function(p) { return p && p.uuid === data.geselecteerdProductUuid; })[0]; var eigenaar = product && product.eigenaren && product.eigenaren[0]; value = (eigenaar && eigenaar.bsn) || '';"
+    },
+    {
+      "key": "productPrijs",
+      "type": "textfield",
+      "input": true,
+      "label": "Prijs",
+      "validate": { "required": true },
+      "tableView": true,
+      "attributes": {
+        "data-testid": "parkeervergunning-selecteer-productPrijs"
+      },
+      "properties": {
+        "targetKey": "pv:productPrijs"
+      },
+      "applyMaskOn": "change",
+      "calculateValue": "var product = JSON.parse(data.alleProductenJson || '[]').filter(function(p) { return p && p.uuid === data.geselecteerdProductUuid; })[0]; value = (product && product.prijs) || '';"
+    },
+    {
+      "key": "productStatus",
+      "type": "select",
+      "input": true,
+      "label": "Status",
+      "widget": "choicesjs",
+      "validate": { "required": true },
+      "tableView": true,
+      "attributes": {
+        "data-testid": "parkeervergunning-selecteer-productStatus"
+      },
+      "properties": {
+        "targetKey": "pv:productStatus"
+      },
+      "data": {
+        "values": [
+          { "label": "Actief", "value": "actief" },
+          { "label": "Verlopen", "value": "verlopen" }
+        ]
+      },
+      "calculateValue": "var product = JSON.parse(data.alleProductenJson || '[]').filter(function(p) { return p && p.uuid === data.geselecteerdProductUuid; })[0]; value = (product && product.status) || 'actief';"
+    },
+    {
+      "key": "productFrequentie",
+      "type": "select",
+      "input": true,
+      "label": "Betalingsfrequentie",
+      "widget": "choicesjs",
+      "validate": { "required": true },
+      "tableView": true,
+      "attributes": {
+        "data-testid": "parkeervergunning-selecteer-productFrequentie"
+      },
+      "properties": {
+        "targetKey": "pv:productFrequentie"
+      },
+      "data": {
+        "values": [
+          { "label": "Eenmalig", "value": "eenmalig" },
+          { "label": "Maandelijks", "value": "maandelijks" },
+          { "label": "Jaarlijks", "value": "jaarlijks" }
+        ]
+      },
+      "calculateValue": "var product = JSON.parse(data.alleProductenJson || '[]').filter(function(p) { return p && p.uuid === data.geselecteerdProductUuid; })[0]; value = (product && product.frequentie) || 'jaarlijks';"
+    },
+    {
+      "key": "gepubliceerd",
+      "type": "checkbox",
+      "input": true,
+      "label": "Gepubliceerd",
+      "tableView": false,
+      "attributes": {
+        "data-testid": "parkeervergunning-selecteer-gepubliceerd"
+      },
+      "properties": {
+        "targetKey": "pv:gepubliceerd"
+      },
+      "calculateValue": "var product = JSON.parse(data.alleProductenJson || '[]').filter(function(p) { return p && p.uuid === data.geselecteerdProductUuid; })[0]; value = product ? !!product.gepubliceerd : true;"
+    },
+    {
+      "key": "aanvraagZaakUrn",
+      "type": "textfield",
+      "input": true,
+      "label": "Aanvraag zaak URN (optioneel)",
+      "tableView": false,
+      "attributes": {
+        "data-testid": "parkeervergunning-selecteer-aanvraagZaakUrn"
+      },
+      "properties": {
+        "targetKey": "pv:aanvraagZaakUrn"
+      },
+      "applyMaskOn": "change",
+      "calculateValue": "var product = JSON.parse(data.alleProductenJson || '[]').filter(function(p) { return p && p.uuid === data.geselecteerdProductUuid; })[0]; value = (product && product.aanvraag_zaak_urn) || '';"
+    },
+    {
+      "key": "aanvraagZaakUrl",
+      "type": "textfield",
+      "input": true,
+      "label": "Aanvraag zaak URL (optioneel)",
+      "tableView": false,
+      "attributes": {
+        "data-testid": "parkeervergunning-selecteer-aanvraagZaakUrl"
+      },
+      "properties": {
+        "targetKey": "pv:aanvraagZaakUrl"
+      },
+      "applyMaskOn": "change",
+      "calculateValue": "var product = JSON.parse(data.alleProductenJson || '[]').filter(function(p) { return p && p.uuid === data.geselecteerdProductUuid; })[0]; value = (product && product.aanvraag_zaak_url) || '';"
+    },
+    {
+      "key": "bijgewerktDataobject",
+      "type": "container",
+      "input": true,
+      "label": "Nieuw kenteken",
+      "tableView": false,
+      "attributes": {
+        "data-testid": "parkeervergunning-selecteer-bijgewerktDataobject"
+      },
+      "properties": {
+        "targetKey": "pv:bijgewerktDataobject"
+      },
+      "components": [
+        {
+          "key": "kenteken",
+          "type": "textfield",
+          "input": true,
+          "label": "Kenteken",
+          "validate": { "required": true },
+          "tableView": true,
+          "attributes": {
+            "data-testid": "parkeervergunning-selecteer-kenteken"
+          },
+          "applyMaskOn": "change",
+          "calculateValue": "var product = JSON.parse(data.alleProductenJson || '[]').filter(function(p) { return p && p.uuid === data.geselecteerdProductUuid; })[0]; value = (product && product.dataobject && product.dataobject.kenteken) || '';"
+        }
+      ]
+    },
+    {
+      "key": "zaken",
+      "type": "editgrid",
+      "input": true,
+      "label": "Gekoppelde zaken",
+      "tableView": false,
+      "attributes": {
+        "data-testid": "parkeervergunning-selecteer-zaken"
+      },
+      "properties": {
+        "targetKey": "pv:zaken"
+      },
+      "templates": {
+        "header": "<div class=\"row\"><div class=\"col-sm-6\">URN</div><div class=\"col-sm-6\">URL</div></div>",
+        "row": "<div class=\"row\"><div class=\"col-sm-6\">{{ row.urn }}</div><div class=\"col-sm-6\">{{ row.url }}</div></div>"
+      },
+      "addAnother": "Zaak toevoegen",
+      "saveRow": "Opslaan",
+      "removeRow": "Verwijderen",
+      "components": [
+        {
+          "key": "urn",
+          "type": "textfield",
+          "input": true,
+          "label": "URN",
+          "tableView": true,
+          "attributes": {
+            "data-testid": "parkeervergunning-selecteer-zaken-urn"
+          },
+          "validate": {
+            "pattern": "^urn:[A-Za-z0-9](?:[A-Za-z0-9]|-){0,30}[A-Za-z0-9]:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/)*(?:\\?\\+(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\\?)*)?(?:\\?=(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\\?)*)?(?:#(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])(?:(?:[A-Za-z0-9]|[-._~]|%[0-9A-Fa-f][0-9A-Fa-f]|[!$&'()*+,;=]|[:@])|/|\\?)*)?$",
+            "customMessage": "Geen geldige URN"
+          },
+          "applyMaskOn": "change"
+        },
+        {
+          "key": "url",
+          "type": "textfield",
+          "input": true,
+          "label": "URL",
+          "tableView": true,
+          "attributes": {
+            "data-testid": "parkeervergunning-selecteer-zaken-url"
+          },
+          "validate": {
+            "maxLength": 200
+          },
+          "applyMaskOn": "change"
+        }
+      ]
+    },
+    {
+      "key": "submit",
+      "type": "button",
+      "input": true,
+      "label": "Parkeervergunning wijzigen",
+      "tableView": false,
+      "disableOnInvalid": true
+    }
+  ]
+}
