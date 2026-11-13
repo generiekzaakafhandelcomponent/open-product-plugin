@@ -158,6 +158,7 @@ class OpenProductPlugin(
     ) {
         require(productPrijs.isNotBlank()) { "De prijs van het product is leeg" }
         require(productFrequentie.isNotBlank()) { "De frequentie van het product is leeg" }
+        requireUniqueZaakUrns(zaken)
         val freqEnum = toFreqEnum(productFrequentie)
         val statusEnum = toStatusEnum(productStatus)
 
@@ -173,9 +174,10 @@ class OpenProductPlugin(
 
         val documentenList =
             if (koppelZaakDocumenten == true) {
-                val url = requireNotNull(zaakUrl) {
-                    "koppelZaakDocumenten staat aan, maar aanvraagZaakUrl is leeg; zonder zaak-URL kunnen geen documenten worden opgehaald"
-                }
+                val url =
+                    requireNotNull(zaakUrl) {
+                        "koppelZaakDocumenten staat aan, maar aanvraagZaakUrl is leeg; zonder zaak-URL kunnen geen documenten worden opgehaald"
+                    }
                 fetchZaakDocumentUrls(execution, url)
             } else {
                 null
@@ -234,6 +236,7 @@ class OpenProductPlugin(
         @PluginActionProperty documentenVariabelNaam: String?,
         @PluginActionProperty zaken: List<ZaakRequest>?,
     ) {
+        requireUniqueZaakUrns(zaken)
         val freqEnum = toFreqEnum(productFrequentie)
         val statusEnum = toStatusEnum(productStatus)
 
@@ -242,7 +245,11 @@ class OpenProductPlugin(
         val documentenList =
             when {
                 documentenVariabelNaam != null -> resolveDocumentenList(execution, documentenVariabelNaam)
-                koppelZaakDocumenten == true && aanvraagZaakUrl != null -> fetchZaakDocumentUrls(execution, aanvraagZaakUrl)
+                koppelZaakDocumenten == true && aanvraagZaakUrl != null ->
+                    fetchZaakDocumentUrls(
+                        execution,
+                        aanvraagZaakUrl,
+                    )
                 else -> null
             }
 
@@ -410,18 +417,29 @@ class OpenProductPlugin(
             else -> throw IllegalArgumentException("Ongeldige status: $status")
         }
 
-    private fun fetchZaakDocumentUrls(execution: DelegateExecution, zaakUrl: String): List<DocumentRequest> {
+    private fun fetchZaakDocumentUrls(
+        execution: DelegateExecution,
+        zaakUrl: String,
+    ): List<DocumentRequest> {
         val zaakUri = URI(zaakUrl)
-        val zakenApiPlugin = checkNotNull(
-            pluginService.createInstance(ZakenApiPlugin::class.java, ZakenApiPlugin.findConfigurationByUrl(zaakUri))
-        ) { "Could not find ZakenApiPlugin configuration for zaak with url: $zaakUri" }
+        val zakenApiPlugin =
+            checkNotNull(
+                pluginService.createInstance(
+                    ZakenApiPlugin::class.java,
+                    ZakenApiPlugin.findConfigurationByUrl(zaakUri),
+                ),
+            ) { "Could not find ZakenApiPlugin configuration for zaak with url: $zaakUri" }
 
         val documentId = UUID.fromString(execution.businessKey)
-        return zakenApiPlugin.getZaakInformatieObjecten(documentId, zaakUri)
+        return zakenApiPlugin
+            .getZaakInformatieObjecten(documentId, zaakUri)
             .map { DocumentRequest(url = it.informatieobject.toString()) }
     }
 
-    private fun resolveDataobjectMap(execution: DelegateExecution, variableName: String?): Map<String, Any>? =
+    private fun resolveDataobjectMap(
+        execution: DelegateExecution,
+        variableName: String?,
+    ): Map<String, Any>? =
         variableName?.let {
             val raw = execution.getVariable(it)
             if (raw != null && raw !is Map<*, *>) {
@@ -431,7 +449,10 @@ class OpenProductPlugin(
             raw as? Map<String, Any>
         }
 
-    private fun resolveDocumentenList(execution: DelegateExecution, variableName: String?): List<DocumentRequest>? =
+    private fun resolveDocumentenList(
+        execution: DelegateExecution,
+        variableName: String?,
+    ): List<DocumentRequest>? =
         variableName?.let {
             val raw = execution.getVariable(it)
             if (raw != null && raw !is List<*>) {
@@ -546,6 +567,25 @@ class OpenProductPlugin(
             }
         val currentUrls = current.mapNotNull { it["url"] }.toSet()
         return current + urls.distinct().filter { it !in currentUrls }.map { mapOf("url" to it) }
+    }
+
+    // Open Producten replaces a product's entire zaken list on every write (it deletes all current rows and
+    // bulk-inserts the new ones in one transaction) under a DB uniqueness constraint on (product, urn) where a
+    // missing urn is stored as an empty string. Two entries sharing a urn, or two entries that both leave urn empty,
+    // collide on that constraint and otherwise only surface as an opaque "Internal Server Error" from Open Producten.
+    private fun requireUniqueZaakUrns(zaken: List<ZaakRequest>?) {
+        val duplicateUrns =
+            zaken
+                .orEmpty()
+                .groupingBy { it.urn.orEmpty() }
+                .eachCount()
+                .filterValues { it > 1 }
+                .keys
+        require(duplicateUrns.isEmpty()) {
+            val described = duplicateUrns.joinToString { if (it.isBlank()) "(leeg)" else it }
+            "Open Product: de zaken-lijst bevat meerdere keren dezelfde urn ($described); elke gekoppelde zaak " +
+                "moet een eigen urn hebben, en hooguit één zaak in de lijst mag zonder urn blijven"
+        }
     }
 
     companion object {

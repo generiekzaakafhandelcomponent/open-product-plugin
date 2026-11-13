@@ -121,4 +121,13 @@
             [disabled]="obs.disabled"
     >
     </v-input>
+    <v-input
+            name="zaken"
+            [title]="'zaken' | pluginTranslate: pluginId | async"
+            [tooltip]="'zakenTooltip' | pluginTranslate: pluginId | async"
+            [margin]="true"
+            [defaultValue]="obs.prefill?.zaken"
+            [disabled]="obs.disabled"
+    >
+    </v-input>
 </v-form>

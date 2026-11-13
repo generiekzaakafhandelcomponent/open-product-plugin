@@ -214,10 +214,18 @@ Creates a product and stores its UUID in the process variable `aangemaaktProduct
 ### Update product via UUID
 
 Updates the product with the given UUID. It has the same properties as **New product**, plus **The UUID of the
-product**. Both actions also accept `koppelZaakDocumenten` (attach the zaak's documents) and `zaken` (a list of
-`{"urn": ..., "url": ...}` entries linking zaken to the product, either one of `urn`/`url` may be left empty), and this
-one additionally `documentenVariabelNaam` (a process variable holding the documents). None of these are exposed in the
-plugin configuration UI; they are set in a process link file only.
+product**. Both actions also accept `koppelZaakDocumenten` (attach the zaak's documents) and `zaken` (a process
+variable, `pv:<name>`, holding a list of `{"urn": ..., "url": ...}` entries linking zaken to the product, either one
+of `urn`/`url` may be left empty), and this one additionally `documentenVariabelNaam` (a process variable holding the
+documents).
+
+`zaken` replaces the product's entire list of linked zaken on every call; it is not merged with what the product
+already has, so a process variable that adds a zaak must still include every zaak the product should keep. Every
+entry in the list must have its own, non-blank `urn` — Open Producten enforces uniqueness per product on `urn`, and
+treats a missing `urn` as an empty string, so two entries that both leave `urn` out (for example the product's current
+zaken, re-sent without a urn, plus a new zaak that also has none) collide. The action rejects such a list itself with
+a clear error before calling Open Producten; without that check Open Producten returns a generic 500 Internal Server
+Error for what is actually a duplicate-key conflict.
 
 ### Retrieve product via UUID
 
