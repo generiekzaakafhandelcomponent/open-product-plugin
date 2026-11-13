@@ -12,6 +12,7 @@ interface UpdateProductConfig {
     dataobjectVariabelNaam?: string;
     koppelZaakDocumenten?: boolean;
     documentenVariabelNaam?: string;
+    zaken?: string;
 }
 
 export {UpdateProductConfig};

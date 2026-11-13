@@ -10,6 +10,7 @@ interface CreateProductConfig {
     productStatus: string;
     dataobjectVariabelNaam?: string;
     koppelZaakDocumenten?: boolean;
+    zaken?: string;
 }
 
 export {CreateProductConfig};
